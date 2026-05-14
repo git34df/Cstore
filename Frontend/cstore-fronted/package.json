@@ -22,7 +22,6 @@
   },
   "private": true,
   "dependencies": {
-    "serve":"^14.2.6",
     "@angular/common": "^20.3.0",
     "@angular/compiler": "^20.3.0",
     "@angular/core": "^20.3.0",
