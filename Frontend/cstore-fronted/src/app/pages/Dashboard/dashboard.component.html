@@ -1,0 +1,131 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <p *ngIf="user">Bienvenido, <strong>{{ user.unique_name || user.sub }}</strong></p>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando datos...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage && !loading" class="error-message">
+    <i class="icon-error">⚠️</i>
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading && !errorMessage && metrics" class="dashboard-content">
+    
+    <!-- KPIs Grid -->
+    <div class="kpi-grid">
+      <!-- Total Ingresos -->
+      <div class="kpi-card ingresos">
+        <div class="kpi-icon">💰</div>
+        <div class="kpi-content">
+          <h3>Total Ingresos</h3>
+          <p class="kpi-value">S/ {{ totalIngresos.toFixed(2) }}</p>
+          <span class="kpi-label">Suma de todas las facturas</span>
+        </div>
+      </div>
+
+      <!-- Stock Total -->
+      <div class="kpi-card stock">
+        <div class="kpi-icon">📦</div>
+        <div class="kpi-content">
+          <h3>Stock Total</h3>
+          <p class="kpi-value">{{ stockTotal }}</p>
+          <span class="kpi-label">Unidades en inventario</span>
+        </div>
+      </div>
+
+      <!-- Precio Promedio -->
+      <div class="kpi-card precio">
+        <div class="kpi-icon">💵</div>
+        <div class="kpi-content">
+          <h3>Precio Promedio</h3>
+          <p class="kpi-value">S/ {{ precioPromedio.toFixed(2) }}</p>
+          <span class="kpi-label">Por producto</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container">
+      
+      <!-- Top Productos por Unidades -->
+      <div class="chart-card">
+        <h3 class="chart-title">
+          <span class="chart-icon">📊</span>
+          Top Productos por Unidades Vendidas
+        </h3>
+        <div class="chart-content">
+          <div *ngIf="topProductosUnidades.length === 0" class="no-data">
+            No hay datos de ventas disponibles
+          </div>
+          <div *ngFor="let producto of topProductosUnidades" class="bar-item">
+            <div class="bar-label">
+              <span class="producto-nombre">{{ producto.nombre }}</span>
+              <span class="producto-valor">{{ producto.unidades }} unidades</span>
+            </div>
+            <div class="bar-container">
+              <div 
+                class="bar-fill unidades" 
+                [style.width]="getBarWidth(producto.unidades, getMaxValue(topProductosUnidades, 'unidades'))">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Productos por Ingresos -->
+      <div class="chart-card">
+        <h3 class="chart-title">
+          <span class="chart-icon">💸</span>
+          Top Productos por Ingresos Generados
+        </h3>
+        <div class="chart-content">
+          <div *ngIf="topProductosIngresos.length === 0" class="no-data">
+            No hay datos de ingresos disponibles
+          </div>
+          <div *ngFor="let producto of topProductosIngresos" class="bar-item">
+            <div class="bar-label">
+              <span class="producto-nombre">{{ producto.nombre }}</span>
+              <span class="producto-valor">S/ {{ producto.ingresos.toFixed(2) }}</span>
+            </div>
+            <div class="bar-container">
+              <div 
+                class="bar-fill ingresos" 
+                [style.width]="getBarWidth(producto.ingresos, getMaxValue(topProductosIngresos, 'ingresos'))">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Métricas básicas (opcional, por si quieres mantenerlas) -->
+    <div class="basic-metrics">
+      <div class="basic-metric">
+        <span class="metric-label">Facturas:</span>
+        <span class="metric-value">{{ metrics.Facturas }}</span>
+      </div>
+      <div class="basic-metric">
+        <span class="metric-label">Productos:</span>
+        <span class="metric-value">{{ metrics.producto }}</span>
+      </div>
+      <div class="basic-metric">
+        <span class="metric-label">Categorías:</span>
+        <span class="metric-value">{{ metrics.categoria }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

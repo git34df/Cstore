@@ -1,0 +1,292 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+
+$primary: #2962be;
+$primary-l: #e8f0fd;
+$success: #10b981;
+$danger: #ef4444;
+$warning: #f59e0b;
+$text: #1a1a2e;
+$muted: #6b7280;
+$border: #e5e7eb;
+$bg: #f6f7fb;
+$surface: #ffffff;
+
+* { box-sizing: border-box; }
+
+.usuarios-page {
+  font-family: 'DM Sans', sans-serif;
+  padding: 1.5rem 2rem;
+  background: $bg;
+  min-height: 100vh;
+  color: $text;
+}
+
+// ── Card ───────────────────────────────────────────────────────
+.card {
+  background: $surface;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  overflow: hidden;
+}
+
+// ── Header ─────────────────────────────────────────────────────
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.8rem;
+  border-bottom: 1px solid $border;
+  background: #fafbff;
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $text;
+    margin: 0 0 .15rem;
+  }
+
+  p {
+    font-size: .82rem;
+    color: $muted;
+    margin: 0;
+  }
+
+  .header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    background: $primary-l;
+    color: $primary;
+    flex-shrink: 0;
+    svg { width: 22px; height: 22px; }
+  }
+
+  .btn-refresh {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    background: #f3f4f6;
+    border: 1px solid $border;
+    border-radius: 9px;
+    padding: .45rem .9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    color: $text;
+    cursor: pointer;
+    transition: all .2s;
+
+    svg { width: 15px; height: 15px; transition: transform .3s; }
+    &:hover { background: $primary-l; color: $primary; border-color: $primary; }
+    &:disabled { opacity: .6; cursor: not-allowed; }
+  }
+}
+
+@keyframes spin-anim { to { transform: rotate(360deg); } }
+.spin { animation: spin-anim .7s linear infinite; }
+
+// ── Loading ────────────────────────────────────────────────────
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .8rem;
+  padding: 3rem;
+  color: $muted;
+  font-size: .9rem;
+}
+
+.spinner {
+  width: 28px; height: 28px;
+  border: 3px solid $border;
+  border-top-color: $primary;
+  border-radius: 50%;
+  animation: spin-anim .7s linear infinite;
+}
+
+// ── Tabla ──────────────────────────────────────────────────────
+.table-wrap {
+  overflow-x: auto;
+  padding: 1rem 1.8rem 1.5rem;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .875rem;
+
+    thead tr {
+      background: #f3f4f6;
+      th {
+        padding: .6rem .9rem;
+        text-align: left;
+        font-weight: 700;
+        font-size: .77rem;
+        color: $muted;
+        text-transform: uppercase;
+        letter-spacing: .4px;
+        white-space: nowrap;
+      }
+    }
+
+    tbody tr {
+      border-bottom: 1px solid $border;
+      transition: background .15s;
+      &:hover { background: #fafbff; }
+
+      td {
+        padding: .75rem .9rem;
+        color: $text;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.id-col { color: $muted; font-size: .82rem; }
+.muted  { color: $muted; }
+
+// ── Avatar + nombre ────────────────────────────────────────────
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+}
+
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: $primary-l;
+  color: $primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: .9rem;
+  flex-shrink: 0;
+}
+
+// ── Badge rol ──────────────────────────────────────────────────
+.badge-rol {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .25rem .7rem;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+
+  svg { width: 13px; height: 13px; }
+
+  &.admin {
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fde68a;
+  }
+
+  &.usuario {
+    background: $primary-l;
+    color: $primary;
+    border: 1px solid #bfdbfe;
+  }
+}
+
+// ── Badge estado ───────────────────────────────────────────────
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .25rem .7rem;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+  }
+
+  &.activo {
+    background: #f0fdf4;
+    color: #065f46;
+    border: 1px solid #bbf7d0;
+    .dot { background: $success; }
+  }
+
+  &.inactivo {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    .dot { background: $danger; }
+  }
+}
+
+// ── Acciones ───────────────────────────────────────────────────
+.actions {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  padding: .38rem .75rem;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+
+  svg { width: 14px; height: 14px; }
+
+  &.btn-activar {
+    background: #f0fdf4;
+    color: #065f46;
+    border: 1px solid #bbf7d0;
+    &:hover { background: $success; color: #fff; border-color: $success; }
+  }
+
+  &.btn-desactivar {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+    &:hover { background: $danger; color: #fff; border-color: $danger; }
+  }
+
+  &.btn-rol {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+    &:hover { background: $warning; color: #fff; border-color: $warning; }
+  }
+}
+
+// ── Empty ──────────────────────────────────────────────────────
+.empty-row {
+  text-align: center !important;
+  padding: 3rem !important;
+  color: $muted;
+
+  svg {
+    width: 48px; height: 48px;
+    opacity: .3;
+    display: block;
+    margin: 0 auto .8rem;
+  }
+
+  p { margin: 0; font-size: .9rem; }
+}
+
+// ── Responsive ─────────────────────────────────────────────────
+@media (max-width: 768px) {
+  .usuarios-page { padding: 1rem; }
+  .actions { flex-direction: column; }
+}
+

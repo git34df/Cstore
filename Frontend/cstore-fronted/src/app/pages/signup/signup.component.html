@@ -1,0 +1,108 @@
+<div class="page-wrapper">
+
+  <div class="bg-shapes">
+    <span class="shape s1"></span>
+    <span class="shape s2"></span>
+    <span class="shape s3"></span>
+  </div>
+
+  <div class="signup-card">
+
+    <div class="card-header">
+      <div class="logo-mark">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="url(#g1)"/>
+          <path d="M8 14h4l2-5 2 10 2-5h2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <defs>
+            <linearGradient id="g1" x1="0" y1="0" x2="28" y2="28">
+              <stop stop-color="#6366f1"/>
+              <stop offset="1" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h2>Crear cuenta</h2>
+      <p>Completa los datos para registrarte en CheapStore</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+      <div class="field" [class.has-error]="signupForm.get('nombre')?.invalid && signupForm.get('nombre')?.touched">
+        <label for="nombre">Nombre completo</label>
+        <div class="input-wrap">
+          <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="nombre" type="text" formControlName="nombre" placeholder="Tu nombre completo" autocomplete="off"/>
+        </div>
+        <span class="error-hint">Ingresa tu nombre</span>
+      </div>
+
+      <div class="field" [class.has-error]="signupForm.get('numerocontacto')?.invalid && signupForm.get('numerocontacto')?.touched">
+        <label for="numerocontacto">Número de contacto</label>
+        <div class="input-wrap">
+          <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+            <path d="M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1 3a1 1 0 01-.23 1.05L7.91 8.84a11.05 11.05 0 005.25 5.25l1.11-1.11a1 1 0 011.05-.23l3 1a1 1 0 01.68.95V17a2 2 0 01-2 2A16 16 0 013 5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          <input id="numerocontacto" type="text" formControlName="numerocontacto" placeholder="+51 999 999 999" autocomplete="off"/>
+        </div>
+        <span class="error-hint">Ingresa un número válido</span>
+      </div>
+
+      <div class="field" [class.has-error]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
+        <label for="email">Correo electrónico</label>
+        <div class="input-wrap">
+          <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+            <rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="email" type="email" formControlName="email" placeholder="correo@ejemplo.com" autocomplete="off"/>
+        </div>
+        <span class="error-hint">Ingresa un correo válido</span>
+      </div>
+
+      <div class="field" [class.has-error]="signupForm.get('contraseña')?.invalid && signupForm.get('contraseña')?.touched">
+        <label for="contraseña">Contraseña</label>
+        <div class="input-wrap">
+          <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+            <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="contraseña" type="password" formControlName="contraseña" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/>
+        </div>
+        <span class="error-hint">Mínimo 6 caracteres</span>
+      </div>
+
+      <button type="submit" [disabled]="loading || signupForm.invalid" [class.loading]="loading">
+        <span class="btn-text">{{ loading ? 'Registrando...' : 'Crear cuenta' }}</span>
+        <svg *ngIf="!loading" class="btn-arrow" viewBox="0 0 20 20" fill="none">
+          <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+    </form>
+
+    <div *ngIf="errorMsg" class="alert alert-error">
+      <svg viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M10 6v5M10 14h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+      {{ errorMsg }}
+    </div>
+
+    <div *ngIf="successMsg" class="alert alert-success">
+      <svg viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {{ successMsg }}
+    </div>
+
+    <p class="footer-link">
+      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+    </p>
+
+  </div>
+</div>

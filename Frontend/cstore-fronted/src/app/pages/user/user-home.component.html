@@ -1,0 +1,141 @@
+<div class="user-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2 class="logo">CheapStore</h2>
+    <nav class="nav-menu">
+      <a routerLink="/user-home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <i class="fas fa-home"></i> Inicio
+      </a>
+      <a routerLink="/categoria" routerLinkActive="active">
+        <i class="fas fa-tags"></i> Categorías
+      </a>
+      <a routerLink="/producto" routerLinkActive="active">
+        <i class="fas fa-box"></i> Productos
+      </a>
+      <a routerLink="/ordenes" routerLinkActive="active">
+        <i class="fas fa-file-invoice"></i> Nueva venta
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar">{{ nombreUsuario | slice:0:2 | uppercase }}</div>
+        <div>
+          <p class="sb-name">{{ nombreUsuario }}</p>
+          <p class="sb-role">Usuario</p>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido principal -->
+  <div class="main-container">
+
+    <header class="main-header">
+      <div class="header-left">
+        <h1>Hola, {{ nombreUsuario }}</h1>
+        <p>Bienvenido a <strong>CheapStore</strong></p>
+      </div>
+      <div class="header-right">
+        <button class="btn-nueva-venta" (click)="irAOrdenes()">
+          <i class="fas fa-plus"></i> Nueva venta
+        </button>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <!-- Stat única -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <p class="stat-label">Mis ventas</p>
+          <p class="stat-value">{{ totalMisVentas }}</p>
+          <p class="stat-sub">generadas por ti</p>
+        </div>
+      </div>
+
+      <p class="section-title">Accesos rápidos</p>
+
+      <!-- Cards de navegación -->
+      <div class="user-cards">
+        <a routerLink="/categoria" class="card">
+          <div class="card-icon ic-cat">
+            <i class="fas fa-tags"></i>
+          </div>
+          <h2>Categorías</h2>
+          <p>Consulta el listado de categorías disponibles</p>
+          <span class="card-link">Ver todas <i class="fas fa-arrow-right"></i></span>
+        </a>
+        <a routerLink="/producto" class="card">
+          <div class="card-icon ic-prod">
+            <i class="fas fa-box"></i>
+          </div>
+          <h2>Productos</h2>
+          <p>Explora el catálogo de productos</p>
+          <span class="card-link">Ver todos <i class="fas fa-arrow-right"></i></span>
+        </a>
+        <a routerLink="/ordenes" class="card">
+          <div class="card-icon ic-venta">
+            <i class="fas fa-file-invoice"></i>
+          </div>
+          <h2>Nueva venta</h2>
+          <p>Genera una factura o boleta de venta</p>
+          <span class="card-link">Ir <i class="fas fa-arrow-right"></i></span>
+        </a>
+      </div>
+
+      <!-- Mis últimas ventas -->
+      <div class="section-ventas">
+        <p class="section-title">Mis últimas ventas</p>
+
+        <div *ngIf="cargando" class="empty-state">Cargando...</div>
+
+        <div *ngIf="!cargando && misVentas.length === 0" class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>Aún no tienes ventas registradas</p>
+          <button class="btn-nueva-venta" (click)="irAOrdenes()">Generar primera venta</button>
+        </div>
+
+        <div class="mini-tabla" *ngIf="!cargando && misVentas.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Método pago</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let v of misVentas">
+                <td>{{ v.id }}</td>
+                <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ v.nombreCliente || '—' }}</td>
+                <td>S/ {{ v.total | number:'1.2-2' }}</td>
+                <td>{{ v.pagoMetodo || '—' }}</td>
+                <td>
+                  <span class="badge-estado"
+                    [class.completada]="v.estado === 'COMPLETADA'"
+                    [class.anulada]="v.estado === 'ANULADA'"
+                    [class.pendiente]="v.estado === 'PENDIENTE'">
+                    {{ v.estado }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="ver-mas" *ngIf="totalMisVentas > 5">
+            Mostrando las últimas 5 de {{ totalMisVentas }} ventas
+          </p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

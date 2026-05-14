@@ -1,0 +1,173 @@
+<div class="admin-layout">
+
+  <!-- Sidebar (mismo que admin) -->
+  <aside class="sidebar">
+    <h2 class="logo">CheapStore</h2>
+    <nav class="nav-menu">
+      <a routerLink="/admin" routerLinkActive="active">
+        <i class="fas fa-th-large"></i> Inicio
+      </a>
+      <a routerLink="/categoria" routerLinkActive="active">
+        <i class="fas fa-tags"></i> Categorías
+      </a>
+      <a routerLink="/producto" routerLinkActive="active">
+        <i class="fas fa-box"></i> Productos
+      </a>
+      <a routerLink="/usuario" routerLinkActive="active">
+        <i class="fas fa-users"></i> Usuarios
+      </a>
+      <a routerLink="/ventas" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+        <i class="fas fa-receipt"></i> Historial ventas
+      </a>
+      <a routerLink="/ordenes" routerLinkActive="active">
+        <i class="fas fa-file-invoice"></i> Nueva venta
+      </a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sb-user">
+        <div class="sb-avatar">{{ inicialesUsuario }}</div>
+        <div>
+          <p class="sb-name">{{ nombreUsuario }}</p>
+          <p class="sb-role">Administrador</p>
+        </div>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- Contenido -->
+  <div class="admin-container">
+
+    <header class="admin-header">
+      <div>
+        <h1>Historial de ventas</h1>
+        <p>Registro completo de todas las ventas del sistema</p>
+      </div>
+      <a routerLink="/ordenes" class="btn-register">
+        <i class="fas fa-plus"></i> Nueva venta
+      </a>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- Stats rápidas -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <p class="stat-label">Total ventas</p>
+          <p class="stat-value">{{ ventas.length }}</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Completadas</p>
+          <p class="stat-value completadas">{{ totalCompletadas }}</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Anuladas</p>
+          <p class="stat-value anuladas">{{ totalAnuladas }}</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Monto total</p>
+          <p class="stat-value">S/ {{ montoTotal | number:'1.2-2' }}</p>
+        </div>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filtros-bar">
+        <div class="filtro-busqueda">
+          <i class="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Buscar por cliente, email o # venta..."
+            [(ngModel)]="filtroTexto"
+            (ngModelChange)="aplicarFiltros()"
+          />
+        </div>
+        <select [(ngModel)]="filtroEstado" (ngModelChange)="aplicarFiltros()">
+          <option value="">Todos los estados</option>
+          <option value="COMPLETADA">Completada</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="ANULADA">Anulada</option>
+        </select>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-tabla">
+
+        <div *ngIf="cargando" class="empty-state">Cargando ventas...</div>
+
+        <div *ngIf="!cargando && ventasFiltradas.length === 0" class="empty-state">
+          <i class="fas fa-inbox"></i>
+          <p>No se encontraron ventas</p>
+        </div>
+
+        <div class="table-wrap" *ngIf="!cargando && ventasFiltradas.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Fecha</th>
+                <th>Cliente</th>
+                <th>Email cliente</th>
+                <th>Cajero</th>
+                <th>Método pago</th>
+                <th>Comprobante</th>
+                <th>Total</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let v of ventasFiltradas">
+                <td><span class="id-badge">#{{ v.id }}</span></td>
+                <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ v.nombreCliente || '—' }}</td>
+                <td class="email-col">{{ v.emailCliente || '—' }}</td>
+                <td class="email-col">{{ v.usuarioEmail }}</td>
+                <td>
+                  <span class="badge-metodo" *ngIf="v.pagoMetodo">{{ v.pagoMetodo }}</span>
+                  <span *ngIf="!v.pagoMetodo">—</span>
+                </td>
+                <td>
+                  <span class="badge-tipo" *ngIf="v.comprobanteTipo">{{ v.comprobanteTipo }}</span>
+                  <span *ngIf="!v.comprobanteTipo" class="sin-comp">Sin comprobante</span>
+                </td>
+                <td class="total-col">S/ {{ v.total | number:'1.2-2' }}</td>
+                <td>
+                  <span class="badge-estado"
+                    [class.completada]="v.estado === 'COMPLETADA'"
+                    [class.anulada]="v.estado === 'ANULADA'"
+                    [class.pendiente]="v.estado === 'PENDIENTE'">
+                    {{ v.estado }}
+                  </span>
+                </td>
+                <td>
+                  <div class="acciones">
+                    <button
+                      class="btn-icon pdf"
+                      title="Descargar PDF"
+                      (click)="descargarPdf(v.comprobanteUuid)"
+                      [disabled]="!v.comprobanteUuid">
+                      <i class="fas fa-file-pdf"></i>
+                    </button>
+                    <button
+                      class="btn-icon anular"
+                      title="Anular venta"
+                      (click)="anularVenta(v.id)"
+                      [disabled]="v.estado === 'ANULADA'">
+                      <i class="fas fa-ban"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="tabla-footer">
+            Mostrando {{ ventasFiltradas.length }} de {{ ventas.length }} ventas
+          </p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>

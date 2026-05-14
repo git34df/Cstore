@@ -1,0 +1,321 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap");
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f4f9;
+  font-family: "DM Sans", sans-serif;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem 1rem;
+}
+
+.bg-shapes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.bg-shapes .shape {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.18;
+}
+.bg-shapes .s1 {
+  width: 420px;
+  height: 420px;
+  background: #6366f1;
+  top: -120px;
+  left: -100px;
+  animation: drift 12s ease-in-out infinite alternate;
+}
+.bg-shapes .s2 {
+  width: 300px;
+  height: 300px;
+  background: #8b5cf6;
+  bottom: -80px;
+  right: -60px;
+  animation: drift 15s ease-in-out infinite alternate-reverse;
+}
+.bg-shapes .s3 {
+  width: 180px;
+  height: 180px;
+  background: #06b6d4;
+  top: 50%;
+  left: 60%;
+  animation: drift 10s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(30px, 20px) scale(1.08);
+  }
+}
+.signup-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 20px;
+  padding: 2.5rem 2.8rem;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.06), 0 20px 50px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  animation: slideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.signup-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #06b6d4);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.card-header .logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+  margin-bottom: 1rem;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+.card-header h2 {
+  font-family: "Sora", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.4px;
+}
+.card-header p {
+  color: #6b7280;
+  font-size: 0.92rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.field {
+  margin-bottom: 1.15rem;
+  animation: fadeField 0.5s ease both;
+}
+.field:nth-child(1) {
+  animation-delay: 0.07s;
+}
+.field:nth-child(2) {
+  animation-delay: 0.14s;
+}
+.field:nth-child(3) {
+  animation-delay: 0.21s;
+}
+.field:nth-child(4) {
+  animation-delay: 0.28s;
+}
+.field label {
+  display: block;
+  font-size: 0.855rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.2px;
+}
+.field .input-wrap {
+  position: relative;
+}
+.field .input-wrap .field-icon {
+  position: absolute;
+  left: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 17px;
+  height: 17px;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+.field .input-wrap input {
+  width: 100%;
+  padding: 0.72rem 1rem 0.72rem 2.5rem;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  background: #fafafa;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.field .input-wrap input::placeholder {
+  color: #c4c4cc;
+}
+.field .input-wrap input:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.field .input-wrap input:focus ~ .field-icon {
+  color: #6366f1;
+}
+.field .input-wrap:focus-within .field-icon {
+  color: #6366f1;
+}
+.field .error-hint {
+  display: none;
+  font-size: 0.78rem;
+  color: #ef4444;
+  margin-top: 0.3rem;
+  padding-left: 2px;
+}
+.field.has-error .input-wrap input {
+  border-color: #ef4444;
+  background: #fff5f5;
+}
+.field.has-error .input-wrap input:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+.field.has-error .error-hint {
+  display: block;
+}
+
+@keyframes fadeField {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+button[type=submit] {
+  width: 100%;
+  margin-top: 0.6rem;
+  padding: 0.85rem 1.2rem;
+  border: none;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.97rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  letter-spacing: 0.2px;
+}
+button[type=submit] .btn-arrow {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s;
+}
+button[type=submit]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.42);
+}
+button[type=submit]:hover:not(:disabled) .btn-arrow {
+  transform: translateX(3px);
+}
+button[type=submit]:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+button[type=submit]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+button[type=submit].loading {
+  pointer-events: none;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.alert {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+.alert svg {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+}
+.alert-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+.alert-success {
+  background: #f0fdf4;
+  color: #065f46;
+  border: 1px solid #bbf7d0;
+}
+
+.footer-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+.footer-link a {
+  color: #6366f1;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-link a:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .signup-card {
+    padding: 2rem 1.6rem;
+    border-radius: 16px;
+  }
+}

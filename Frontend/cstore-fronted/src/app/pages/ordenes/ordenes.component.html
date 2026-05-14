@@ -1,0 +1,256 @@
+<div class="ordenes-page">
+
+  <!-- ═══════════════════════════════════════════
+       FORMULARIO NUEVA FACTURA
+  ════════════════════════════════════════════ -->
+  <div class="card">
+
+    <div class="card-header">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 12h6M9 16h6M7 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2M9 4a2 2 0 002 2h2a2 2 0 002-2M9 4a2 2 0 012-2h2a2 2 0 012 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <h2>Nueva Factura</h2>
+        <p>Completa los datos del cliente y los productos</p>
+      </div>
+      <div class="badge-sunat">SUNAT</div>
+    </div>
+
+    <form [formGroup]="facturaForm" (ngSubmit)="generateFactura()">
+
+      <!-- ── SECCIÓN: Datos del cliente ── -->
+      <div class="section-title">
+        <span class="dot"></span> Datos del cliente
+      </div>
+
+      <div class="form-grid">
+
+        <div class="field" [class.error]="isInvalid('ruc_cliente')">
+          <label>RUC del cliente <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" formControlName="ruc_cliente" placeholder="20123456789" maxlength="11"/>
+          </div>
+          <span class="hint-error">RUC debe tener 11 dígitos</span>
+        </div>
+
+        <div class="field" [class.error]="isInvalid('razon_social')">
+          <label>Razón social <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M3 17s0-4 7-4 7 4 7 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
+            <input type="text" formControlName="razon_social" placeholder="Empresa S.A.C."/>
+          </div>
+          <span class="hint-error">Campo requerido</span>
+        </div>
+
+        <div class="field" [class.error]="isInvalid('nombre')">
+          <label>Nombre de contacto <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="text" formControlName="nombre" placeholder="Juan Pérez"/>
+          </div>
+          <span class="hint-error">Campo requerido</span>
+        </div>
+
+        <div class="field" [class.error]="isInvalid('email')">
+          <label>Correo electrónico <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            <input type="email" formControlName="email" placeholder="contacto@empresa.com"/>
+          </div>
+          <span class="hint-error">Correo inválido</span>
+        </div>
+
+        <div class="field" [class.error]="isInvalid('numerocontacto')">
+          <label>Teléfono <span class="req">*</span></label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M3 5a2 2 0 012-2h2.28a1 1 0 01.95.68l1 3a1 1 0 01-.23 1.05L7.91 8.84a11.05 11.05 0 005.25 5.25l1.11-1.11a1 1 0 011.05-.23l3 1a1 1 0 01.68.95V17a2 2 0 01-2 2A16 16 0 013 5z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <input type="text" formControlName="numerocontacto" placeholder="+51 999 999 999"/>
+          </div>
+          <span class="hint-error">Campo requerido</span>
+        </div>
+
+        <div class="field field-full">
+          <label>Dirección del cliente</label>
+          <div class="input-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M10 2C7.24 2 5 4.24 5 7c0 4.25 5 11 5 11s5-6.75 5-11c0-2.76-2.24-5-5-5zm0 6.5A1.5 1.5 0 1110 5a1.5 1.5 0 010 3.5z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <input type="text" formControlName="direccion_cliente" placeholder="Av. Lima 123, Lima"/>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── SECCIÓN: Método de pago ── -->
+      <div class="section-title">
+        <span class="dot"></span> Condición de pago
+      </div>
+
+      <div class="form-grid cols-3">
+        <div class="field" [class.error]="isInvalid('metodo_pago')">
+          <label>Método de pago <span class="req">*</span></label>
+          <div class="input-wrap select-wrap">
+            <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="5" width="16" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 9h16" stroke="currentColor" stroke-width="1.5"/></svg>
+            <select formControlName="metodo_pago">
+              <option value="">Seleccione...</option>
+              <option value="Efectivo">Efectivo</option>
+              <option value="Tarjeta">Tarjeta</option>
+              <option value="Yape">Yape</option>
+              <option value="Plin">Plin</option>
+              <option value="Transferencia">Transferencia</option>
+            </select>
+          </div>
+          <span class="hint-error">Seleccione un método</span>
+        </div>
+      </div>
+
+      <!-- ── SECCIÓN: Detalle de productos ── -->
+      <div class="section-title">
+        <span class="dot"></span> Detalle de productos
+        <button type="button" class="btn-add" (click)="addProducto()">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Agregar producto
+        </button>
+      </div>
+
+      <div *ngIf="detalleProducto.length === 0" class="empty-detalle">
+        <svg viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="32" rx="4" stroke="currentColor" stroke-width="2"/><path d="M24 16v16M16 24h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <p>Agrega al menos un producto para generar la factura</p>
+      </div>
+
+      <div class="items-table" *ngIf="detalleProducto.length > 0">
+        <div class="items-header">
+          <span>Producto</span>
+          <span>Categoría</span>
+          <span>Cantidad</span>
+          <span>P. Unit (S/)</span>
+          <span>Subtotal (S/)</span>
+          <span></span>
+        </div>
+
+        <div formArrayName="detalleproducto">
+          <div
+            class="item-row"
+            *ngFor="let item of detalleProducto.controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="input-wrap">
+              <select formControlName="nombre" (change)="onSelectProducto(i)">
+                <option value="">Seleccionar...</option>
+                <option *ngFor="let p of productosCatalogo" [value]="p.nombre">
+                  {{ p.nombre }}
+                </option>
+              </select>
+            </div>
+
+            <div class="input-wrap">
+              <input type="text" formControlName="categoria" placeholder="Categoría" readonly/>
+            </div>
+
+            <div class="input-wrap">
+              <input type="number" formControlName="cantidad" min="1" (input)="onSelectProducto(i)"/>
+            </div>
+
+            <div class="input-wrap">
+              <input type="number" formControlName="precio" readonly/>
+            </div>
+
+            <div class="input-wrap total-cell">
+              <input type="number" formControlName="total" readonly/>
+            </div>
+
+            <button type="button" class="btn-remove" (click)="eliminarProducto(i)" title="Eliminar">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SECCIÓN: Resumen con IGV ── -->
+      <div class="resumen-igv" *ngIf="detalleProducto.length > 0">
+        <div class="resumen-row">
+          <span>Op. Gravadas</span>
+          <span>S/ {{ facturaForm.get('subtotal')?.value }}</span>
+        </div>
+        <div class="resumen-row">
+          <span>IGV (18%)</span>
+          <span>S/ {{ facturaForm.get('igv')?.value }}</span>
+        </div>
+        <div class="resumen-row total">
+          <span>TOTAL</span>
+          <span>S/ {{ facturaForm.get('total')?.value }}</span>
+        </div>
+      </div>
+
+      <!-- ── Botón submit ── -->
+      <button type="submit" class="btn-submit" [disabled]="loading">
+        <span *ngIf="!loading">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 4l12 6-12 6V4z" fill="currentColor"/></svg>
+          Generar Factura
+        </span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+
+    </form>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       TABLA DE FACTURAS REGISTRADAS
+  ════════════════════════════════════════════ -->
+  <div class="card mt">
+
+    <div class="card-header">
+      <div class="header-icon secondary">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 10h18M3 6h18M3 14h12M3 18h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </div>
+      <div>
+        <h2>Facturas Registradas</h2>
+        <p>{{ facturas.length }} factura(s) encontrada(s)</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Serie</th>
+            <th>RUC</th>
+            <th>Razón Social</th>
+            <th>Email</th>
+            <th>Método</th>
+            <th>Subtotal</th>
+            <th>IGV</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let f of facturas">
+            <td><span class="badge-serie">{{ f.serie }}-{{ f.correlativo | number:'8.0-0' }}</span></td>
+            <td>{{ f.rucCliente || '—' }}</td>
+            <td>{{ f.razonSocial || f.nombre }}</td>
+            <td>{{ f.email }}</td>
+            <td><span class="badge-metodo">{{ f.metodo_pago }}</span></td>
+            <td>S/ {{ f.subtotal | number:'1.2-2' }}</td>
+            <td>S/ {{ f.igv | number:'1.2-2' }}</td>
+            <td class="total-col">S/ {{ f.totalConIgv || f.total | number:'1.2-2' }}</td>
+            <td>
+              <div class="actions">
+                <button class="btn-icon pdf" (click)="descargarPdf(f.uuid)" title="Descargar PDF">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M4 4a2 2 0 012-2h5l5 5v9a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" stroke="currentColor" stroke-width="1.5"/><path d="M13 2v5h5" stroke="currentColor" stroke-width="1.5"/><path d="M7 13h6M7 10h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </button>
+                <button class="btn-icon delete" (click)="borrarFactura(f.id)" title="Eliminar">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="facturas.length === 0">
+            <td colspan="9" class="empty-row">No hay facturas registradas</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>

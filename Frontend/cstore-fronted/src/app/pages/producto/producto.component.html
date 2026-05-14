@@ -1,0 +1,120 @@
+<div class="producto-container">
+  <h2>Gestión de Productos</h2>
+
+  <!-- Formulario -->
+  <form [formGroup]="productoForm" (ngSubmit)="onSubmit()" class="form-producto">
+
+    <!-- Fila 1: Nombre y Descripción -->
+    <div class="form-row">
+      <div class="form-field">
+        <label>Nombre del producto</label>
+        <input formControlName="nombre_producto" placeholder="Ej: Memoria Kingston" />
+        <small class="error" *ngIf="productoForm.get('nombre_producto')?.touched && productoForm.get('nombre_producto')?.invalid">
+          El nombre es obligatorio.
+        </small>
+      </div>
+      <div class="form-field">
+        <label>Descripción</label>
+        <input formControlName="descripcion" placeholder="Breve descripción del producto" />
+        <small class="error" *ngIf="productoForm.get('descripcion')?.touched && productoForm.get('descripcion')?.invalid">
+          La descripción es obligatoria.
+        </small>
+      </div>
+    </div>
+
+    <!-- Fila 2: Precio, Stock, Categoría -->
+    <div class="form-row">
+      <div class="form-field">
+        <label>Precio (S/)</label>
+        <input type="number" formControlName="precio" placeholder="0.00" />
+        <small class="error" *ngIf="productoForm.get('precio')?.touched && productoForm.get('precio')?.invalid">
+          El precio es obligatorio.
+        </small>
+      </div>
+      <div class="form-field">
+        <label>Stock</label>
+        <input type="number" formControlName="stock" placeholder="0" />
+        <small class="error" *ngIf="productoForm.get('stock')?.touched && productoForm.get('stock')?.invalid">
+          Stock debe ser un número mayor o igual a 0.
+        </small>
+      </div>
+      <div class="form-field">
+        <label>ID Categoría</label>
+        <input type="number" formControlName="IdCategoria" placeholder="ID" />
+        <small class="error" *ngIf="productoForm.get('IdCategoria')?.touched && productoForm.get('IdCategoria')?.invalid">
+          La categoría es obligatoria.
+        </small>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="productoForm.invalid">
+        <i class="fas {{ editing ? 'fa-pen' : 'fa-plus' }}"></i>
+        {{ editing ? 'Actualizar Producto' : 'Agregar Producto' }}
+      </button>
+      <button type="button" class="btn-secondary" (click)="resetForm()">
+        Limpiar
+      </button>
+    </div>
+  </form>
+
+  <!-- Tabla -->
+  <div class="table-wrapper">
+    <div class="tabla-header">
+      <h3>Lista de Productos</h3>
+      <span class="tabla-count">{{ productos.length }} en inventario</span>
+    </div>
+
+    <table class="table-productos">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Categoría</th>
+          <th>Estado</th>
+          <th style="text-align: right; padding-right: 1rem;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of productos">
+          <td>{{ p.id }}</td>
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.descripcion }}</td>
+          <td>{{ p.precio | currency : 'S/' }}</td>
+          <td>{{ p.stock }}</td>
+          <td>{{ p.categoriaName }}</td>
+          <td>
+            <span class="badge-estado" [ngClass]="p.estado === 'Activo' ? 'activo' : 'inactivo'">
+              <span class="dot"></span>
+              {{ p.estado }}
+            </span>
+          </td>
+          <td class="acciones">
+            <div class="acciones">
+              <button type="button" class="btn-edit" title="Editar" (click)="editProducto(p)">
+                <i class="fas fa-pen"></i>
+              </button>
+              <button type="button" class="btn-delete" title="Eliminar" (click)="deleteProducto(p.id)">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button type="button" class="btn-status" (click)="toggleStatus(p)">
+                <span class="dot" [style.color]="p.estado === 'Activo' ? '#065f46' : '#991b1b'">●</span>
+                {{ p.estado === 'Activo' ? 'Desactivar' : 'Activar' }}
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="productos.length === 0">
+          <td colspan="8" style="text-align:center; padding: 2.5rem; color: #9ca3af; font-size: 0.875rem;">
+            No hay productos registrados.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

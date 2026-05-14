@@ -1,0 +1,139 @@
+<div class="usuarios-page">
+
+  <div class="card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M16 11l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <h2>Gestión de Usuarios</h2>
+        <p>{{ usuarios.length }} usuario(s) registrado(s)</p>
+      </div>
+      <button class="btn-refresh" (click)="loadUsuarios()" [disabled]="loading">
+        <svg viewBox="0 0 20 20" fill="none" [class.spin]="loading">
+          <path d="M4 10a6 6 0 1 0 1.1-3.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M4 6v4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Actualizar
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando usuarios...</p>
+    </div>
+
+    <!-- Tabla -->
+    <div class="table-wrap" *ngIf="!loading">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let u of usuarios; trackBy: trackById">
+
+            <td class="id-col">{{ u.id }}</td>
+
+            <td>
+              <div class="user-info">
+                <div class="avatar">{{ u.nombre?.charAt(0)?.toUpperCase() }}</div>
+                <span>{{ u.nombre }}</span>
+              </div>
+            </td>
+
+            <td class="muted">{{ u.email }}</td>
+
+            <td class="muted">{{ u.numerocontacto || '—' }}</td>
+
+            <!-- Rol con badge -->
+            <td>
+              <span class="badge-rol" [class.admin]="u.rol === 'admin'" [class.usuario]="u.rol !== 'admin'">
+                <svg viewBox="0 0 16 16" fill="none">
+                  <ng-container *ngIf="u.rol === 'admin'">
+                    <path d="M8 2l1.5 3 3.5.5-2.5 2.5.6 3.5L8 10l-3.1 1.5.6-3.5L3 5.5 6.5 5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                  </ng-container>
+                  <ng-container *ngIf="u.rol !== 'admin'">
+                    <circle cx="8" cy="6" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+                    <path d="M3 14c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                  </ng-container>
+                </svg>
+                {{ u.rol ?? 'usuario' }}
+              </span>
+            </td>
+
+            <!-- Estado -->
+            <td>
+              <span class="badge-estado" [class.activo]="u.status === 'true'" [class.inactivo]="u.status !== 'true'">
+                <span class="dot"></span>
+                {{ u.status === 'true' ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+
+            <!-- Acciones -->
+            <td>
+              <div class="actions">
+                <!-- Cambiar estado -->
+                <button
+                  class="btn-action"
+                  [class.btn-desactivar]="u.status === 'true'"
+                  [class.btn-activar]="u.status !== 'true'"
+                  (click)="updateEstado(u)"
+                  [title]="u.status === 'true' ? 'Desactivar usuario' : 'Activar usuario'"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                    <path *ngIf="u.status === 'true'" d="M7 10h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <path *ngIf="u.status !== 'true'" d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ u.status === 'true' ? 'Desactivar' : 'Activar' }}
+                </button>
+
+                <!-- Cambiar rol -->
+                <button
+                  class="btn-action btn-rol"
+                  (click)="updateRol(u)"
+                  [title]="'Cambiar a ' + (u.rol === 'admin' ? 'usuario' : 'admin')"
+                >
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <path d="M10 3v14M3 10h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  </svg>
+                  Cambiar a {{ u.rol === 'admin' ? 'Usuario' : 'Admin' }}
+                </button>
+              </div>
+            </td>
+
+          </tr>
+
+          <!-- Empty state -->
+          <tr *ngIf="usuarios.length === 0">
+            <td colspan="7" class="empty-row">
+              <svg viewBox="0 0 48 48" fill="none">
+                <circle cx="24" cy="18" r="8" stroke="currentColor" stroke-width="2"/>
+                <path d="M8 42c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <p>No hay usuarios registrados</p>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
