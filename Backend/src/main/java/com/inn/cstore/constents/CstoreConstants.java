@@ -7,5 +7,5 @@ public class CstoreConstants {
 
     public static final String UNAUTHORIZED_ACCESS="Unauthorized Access";
 
-    public static final String STORE_LOCATION = "D:\\pdf_Cstore";
+    public static final String STORE_LOCATION = System.getProperty("java.io.tmpdir") + "/pdf_Cstore";
 }
