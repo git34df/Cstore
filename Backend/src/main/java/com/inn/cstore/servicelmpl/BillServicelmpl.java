@@ -97,25 +97,30 @@ public class BillServicelmpl implements BillService {
             String numeroComprobante = EMISOR_SERIE + "-" + String.format("%08d", correlativo);
 
             // ── Datos del cliente ─────────────────────────────
-            String rucCliente    = getStr(requestMap, "ruc_cliente",    "Sin RUC");
-            String razonSocial   = getStr(requestMap, "razon_social",   getStr(requestMap, "name", "-"));
+            String rucCliente    = getStr(requestMap, "ruc_cliente",       "Sin RUC");
+            String razonSocial   = getStr(requestMap, "razon_social",      getStr(requestMap, "name", "-"));
             String direccionCli  = getStr(requestMap, "direccion_cliente", "-");
-            String email         = getStr(requestMap, "email",          "-");
-            String telefono      = getStr(requestMap, "numero_contacto", "-");
-            String metodoPago    = getStr(requestMap, "metodo_pago",    "-");
+            String email         = getStr(requestMap, "email",             "-");
+            String telefono      = getStr(requestMap, "numero_contacto",   "-");
+            String metodoPago    = getStr(requestMap, "metodo_pago",       "-");
             String fecha         = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            // ── Crear directorio si no existe (fix Railway) ───
+            File storeDir = new File(CstoreConstants.STORE_LOCATION);
+            if (!storeDir.exists()) {
+                storeDir.mkdirs();
+            }
 
             // ── Generar PDF ───────────────────────────────────
             Document document = new Document();
             PdfWriter.getInstance(document,
-                    new FileOutputStream(CstoreConstants.STORE_LOCATION + "\\" + fileName + ".pdf"));
+                    new FileOutputStream(CstoreConstants.STORE_LOCATION + "/" + fileName + ".pdf"));
             document.open();
 
             // Borde exterior
             setRectangleInPdf(document);
 
             // ── ENCABEZADO ────────────────────────────────────
-            // Bloque izquierdo: datos del emisor
             PdfPTable headerTable = new PdfPTable(2);
             headerTable.setWidthPercentage(100);
             headerTable.setWidths(new float[]{60f, 40f});
@@ -125,14 +130,10 @@ public class BillServicelmpl implements BillService {
             PdfPCell emisorCell = new PdfPCell();
             emisorCell.setBorder(Rectangle.BOX);
             emisorCell.setPadding(8f);
-            emisorCell.addElement(new Paragraph(EMISOR_RAZON_SOCIAL,
-                    getFont("SubHeader")));
-            emisorCell.addElement(new Paragraph("RUC: " + EMISOR_RUC,
-                    getFont("Data")));
-            emisorCell.addElement(new Paragraph(EMISOR_DIRECCION,
-                    getFont("Data")));
-            emisorCell.addElement(new Paragraph("Lima, Perú",
-                    getFont("Data")));
+            emisorCell.addElement(new Paragraph(EMISOR_RAZON_SOCIAL,  getFont("SubHeader")));
+            emisorCell.addElement(new Paragraph("RUC: " + EMISOR_RUC, getFont("Data")));
+            emisorCell.addElement(new Paragraph(EMISOR_DIRECCION,     getFont("Data")));
+            emisorCell.addElement(new Paragraph("Lima, Perú",         getFont("Data")));
             headerTable.addCell(emisorCell);
 
             // Celda comprobante (derecha) — recuadro obligatorio SUNAT
@@ -140,12 +141,9 @@ public class BillServicelmpl implements BillService {
             comprobanteCell.setBorder(Rectangle.BOX);
             comprobanteCell.setPadding(8f);
             comprobanteCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-            comprobanteCell.addElement(buildCenteredParagraph("RUC: " + EMISOR_RUC,
-                    getFont("Data")));
-            comprobanteCell.addElement(buildCenteredParagraph("FACTURA ELECTRÓNICA",
-                    getFont("SubHeader")));
-            comprobanteCell.addElement(buildCenteredParagraph(numeroComprobante,
-                    getFont("SubHeader")));
+            comprobanteCell.addElement(buildCenteredParagraph("RUC: " + EMISOR_RUC,  getFont("Data")));
+            comprobanteCell.addElement(buildCenteredParagraph("FACTURA ELECTRÓNICA", getFont("SubHeader")));
+            comprobanteCell.addElement(buildCenteredParagraph(numeroComprobante,     getFont("SubHeader")));
             headerTable.addCell(comprobanteCell);
 
             document.add(headerTable);
@@ -158,12 +156,9 @@ public class BillServicelmpl implements BillService {
             PdfPCell clienteCell = new PdfPCell();
             clienteCell.setBorder(Rectangle.BOX);
             clienteCell.setPadding(7f);
-            clienteCell.addElement(new Paragraph(
-                    "Señor(es): " + razonSocial, getFont("Data")));
-            clienteCell.addElement(new Paragraph(
-                    "RUC / DNI: " + rucCliente, getFont("Data")));
-            clienteCell.addElement(new Paragraph(
-                    "Dirección: " + direccionCli, getFont("Data")));
+            clienteCell.addElement(new Paragraph("Señor(es): " + razonSocial, getFont("Data")));
+            clienteCell.addElement(new Paragraph("RUC / DNI: " + rucCliente,  getFont("Data")));
+            clienteCell.addElement(new Paragraph("Dirección: " + direccionCli, getFont("Data")));
             clienteCell.addElement(new Paragraph(
                     "Correo: " + email + "    Teléfono: " + telefono, getFont("Data")));
             clienteCell.addElement(new Paragraph(
@@ -198,9 +193,9 @@ public class BillServicelmpl implements BillService {
             totalesTable.setWidths(new float[]{55f, 45f});
             totalesTable.setSpacingAfter(10f);
 
-            addTotalRow(totalesTable, "Op. Gravadas (S/)", String.format("%.2f", subtotal));
-            addTotalRow(totalesTable, "IGV 18% (S/)",     String.format("%.2f", igv));
-            addTotalRowBold(totalesTable, "TOTAL (S/)",   String.format("%.2f", totalConIgv));
+            addTotalRow(totalesTable,     "Op. Gravadas (S/)", String.format("%.2f", subtotal));
+            addTotalRow(totalesTable,     "IGV 18% (S/)",      String.format("%.2f", igv));
+            addTotalRowBold(totalesTable, "TOTAL (S/)",        String.format("%.2f", totalConIgv));
 
             document.add(totalesTable);
 
@@ -229,7 +224,7 @@ public class BillServicelmpl implements BillService {
     // ─────────────────────────────────────────────────────────
 
     private void addItemTableHeader(PdfPTable table) {
-        BaseColor headerColor = new BaseColor(41, 98, 190); // Azul SUNAT
+        BaseColor headerColor = new BaseColor(41, 98, 190);
         String[] cols = {"Ítem", "Descripción", "U.M.", "Cantidad", "V. Unitario", "Subtotal"};
         for (String col : cols) {
             PdfPCell cell = new PdfPCell(new Phrase(col, getFont("TableHeader")));
@@ -243,18 +238,18 @@ public class BillServicelmpl implements BillService {
 
     private void addItemRow(PdfPTable table, Map<String, Object> item, int num, double igvRate) {
         double precio    = Double.parseDouble(String.valueOf(item.get("precio")));
-        int cantidad = (int) Double.parseDouble(String.valueOf(item.get("cantidad")));
+        int    cantidad  = (int) Double.parseDouble(String.valueOf(item.get("cantidad")));
         double valorUnit = Math.round((precio / (1 + igvRate)) * 100.0) / 100.0;
         double subTotal  = Math.round(valorUnit * cantidad * 100.0) / 100.0;
 
         BaseColor alt = (num % 2 == 0) ? new BaseColor(235, 241, 255) : BaseColor.WHITE;
 
-        addDataCell(table, String.valueOf(num),                  Element.ALIGN_CENTER, alt);
-        addDataCell(table, String.valueOf(item.get("nombre")),   Element.ALIGN_LEFT,   alt);
-        addDataCell(table, "NIU",                                Element.ALIGN_CENTER, alt);
-        addDataCell(table, String.valueOf(cantidad),             Element.ALIGN_CENTER, alt);
-        addDataCell(table, String.format("%.2f", valorUnit),    Element.ALIGN_RIGHT,  alt);
-        addDataCell(table, String.format("%.2f", subTotal),     Element.ALIGN_RIGHT,  alt);
+        addDataCell(table, String.valueOf(num),               Element.ALIGN_CENTER, alt);
+        addDataCell(table, String.valueOf(item.get("nombre")), Element.ALIGN_LEFT,  alt);
+        addDataCell(table, "NIU",                             Element.ALIGN_CENTER, alt);
+        addDataCell(table, String.valueOf(cantidad),          Element.ALIGN_CENTER, alt);
+        addDataCell(table, String.format("%.2f", valorUnit),  Element.ALIGN_RIGHT,  alt);
+        addDataCell(table, String.format("%.2f", subTotal),   Element.ALIGN_RIGHT,  alt);
     }
 
     private void addDataCell(PdfPTable table, String text, int align, BaseColor bg) {
@@ -318,15 +313,13 @@ public class BillServicelmpl implements BillService {
             case "Header":
                 return FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16, BaseColor.WHITE);
             case "SubHeader":
-                return FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10,
-                        new BaseColor(41, 98, 190));
+                return FontFactory.getFont(FontFactory.HELVETICA_BOLD, 10, new BaseColor(41, 98, 190));
             case "TableHeader":
                 return FontFactory.getFont(FontFactory.HELVETICA_BOLD, 9, BaseColor.WHITE);
             case "Data":
                 return FontFactory.getFont(FontFactory.HELVETICA, 9, BaseColor.BLACK);
             case "Small":
-                return FontFactory.getFont(FontFactory.HELVETICA, 8,
-                        new BaseColor(100, 100, 100));
+                return FontFactory.getFont(FontFactory.HELVETICA, 8, new BaseColor(100, 100, 100));
         }
         return new Font();
     }
@@ -335,7 +328,7 @@ public class BillServicelmpl implements BillService {
     // NÚMERO A LETRAS (simplificado para Perú)
     // ─────────────────────────────────────────────────────────
     private String numeroALetras(double monto) {
-        int entero = (int) monto;
+        int entero   = (int) monto;
         int centavos = (int) Math.round((monto - entero) * 100);
         return "SON " + entero + " CON " + String.format("%02d", centavos) + "/100";
     }
@@ -377,9 +370,9 @@ public class BillServicelmpl implements BillService {
     private void descontarStock(Map<String, Object> requestMap) throws JSONException {
         JSONArray jsonArray = normalizeDetalleProducto(requestMap.get("detalleproducto"));
         for (int i = 0; i < jsonArray.length(); i++) {
-            JSONObject obj    = jsonArray.getJSONObject(i);
-            String nombre     = obj.getString("nombre");
-            int cantidad = (int) obj.getDouble("cantidad");
+            JSONObject obj = jsonArray.getJSONObject(i);
+            String nombre  = obj.getString("nombre");
+            int cantidad   = (int) obj.getDouble("cantidad");
             Producto producto = productoDao.findByNombre(nombre);
             if (producto == null)
                 throw new RuntimeException("Producto no existe: " + nombre);
@@ -437,7 +430,8 @@ public class BillServicelmpl implements BillService {
             if (uuid == null || uuid.isEmpty())
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-            String filePath = CstoreConstants.STORE_LOCATION + "\\" + uuid + ".pdf";
+            // fix Railway: separador / en lugar de \\
+            String filePath = CstoreConstants.STORE_LOCATION + "/" + uuid + ".pdf";
             if (!CstoreUtils.isFileExist(filePath)) {
                 requestMap.put("isGenerate", false);
                 generateReport(requestMap);
