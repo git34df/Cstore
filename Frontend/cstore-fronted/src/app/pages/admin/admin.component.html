@@ -1,22 +1,17 @@
 <div class="admin-layout">
-
   <!-- ── Sidebar ──────────────────────────────────────────────── -->
   <aside class="sidebar">
     <h2 class="logo">CheapStore</h2>
 
     <nav class="nav-menu">
-      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
         <i class="fas fa-th-large"></i> Inicio
       </a>
       <a routerLink="/categoria" routerLinkActive="active">
         <i class="fas fa-tags"></i> Categorías
       </a>
-      <a routerLink="/producto" routerLinkActive="active">
-        <i class="fas fa-box"></i> Productos
-      </a>
-      <a routerLink="/usuario" routerLinkActive="active">
-        <i class="fas fa-users"></i> Usuarios
-      </a>
+      <a routerLink="/producto" routerLinkActive="active"> <i class="fas fa-box"></i> Productos </a>
+      <a routerLink="/usuario" routerLinkActive="active"> <i class="fas fa-users"></i> Usuarios </a>
       <a routerLink="/ventas" routerLinkActive="active">
         <i class="fas fa-receipt"></i> Historial ventas
       </a>
@@ -27,7 +22,7 @@
 
     <div class="sidebar-bottom">
       <div class="sb-user">
-        <div class="sb-avatar">{{ nombreUsuario | slice:0:2 | uppercase }}</div>
+        <div class="sb-avatar">{{ nombreUsuario | slice: 0 : 2 | uppercase }}</div>
         <div>
           <p class="sb-name">{{ nombreUsuario }}</p>
           <p class="sb-role">Administrador</p>
@@ -41,7 +36,6 @@
 
   <!-- ── Main content ──────────────────────────────────────────── -->
   <div class="admin-container">
-
     <header class="admin-header">
       <div class="header-left">
         <h1>Hola, {{ nombreUsuario }}</h1>
@@ -58,7 +52,6 @@
     </header>
 
     <main class="admin-main">
-
       <!-- ── Stats ── -->
       <div class="stats-row">
         <div class="stat-card">
@@ -78,7 +71,7 @@
         </div>
         <div class="stat-card">
           <p class="stat-label">Monto recaudado</p>
-          <p class="stat-value monto">S/ {{ montoTotal | number:'1.0-0' }}</p>
+          <p class="stat-value monto">S/ {{ montoTotal | number: '1.0-0' }}</p>
           <p class="stat-sub">ventas completadas</p>
         </div>
       </div>
@@ -110,7 +103,7 @@
       <!-- ── Últimas ventas ── -->
       <div class="ventas-section">
         <div class="ventas-header">
-          <p class="section-title" style="margin:0">Últimas ventas</p>
+          <p class="section-title" style="margin: 0">Últimas ventas</p>
           <button class="btn-ver-todas" (click)="goToVentas()">
             Ver todas <i class="fas fa-arrow-right"></i>
           </button>
@@ -128,7 +121,6 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Fecha</th>
                 <th>Cliente</th>
                 <th>Cajero</th>
                 <th>Método</th>
@@ -138,29 +130,25 @@
             </thead>
             <tbody>
               <tr *ngFor="let v of ultimasVentas">
-                <td><span class="id-badge">#{{ v.id }}</span></td>
-                <td>{{ v.fecha | date:'dd/MM/yy HH:mm' }}</td>
-                <td>{{ v.nombreCliente || '—' }}</td>
-                <td class="email-col">{{ v.usuarioEmail }}</td>
                 <td>
-                  <span class="badge-metodo" *ngIf="v.pagoMetodo">{{ v.pagoMetodo }}</span>
-                  <span *ngIf="!v.pagoMetodo" style="color:#9ca3af">—</span>
+                  <span class="id-badge">#{{ v.id }}</span>
                 </td>
-                <td class="total-col">S/ {{ v.total | number:'1.2-2' }}</td>
+                <td>{{ v.serie }}-{{ v.correlativo }}</td>
+                <td>{{ v.nombre || '—' }}</td>
+                <td class="email-col">{{ v.createdby || '—' }}</td>
                 <td>
-                  <span class="badge-estado"
-                    [class.completada]="v.estado === 'COMPLETADA'"
-                    [class.anulada]="v.estado === 'ANULADA'"
-                    [class.pendiente]="v.estado === 'PENDIENTE'">
-                    {{ v.estado }}
-                  </span>
+                  <span class="badge-metodo" *ngIf="v.metodo_pago">{{ v.metodo_pago }}</span>
+                  <span *ngIf="!v.metodo_pago" style="color: #9ca3af">—</span>
+                </td>
+                <td class="total-col">S/ {{ v.totalConIgv | number: '1.2-2' }}</td>
+                <td>
+                  <span class="badge-estado completada">COMPLETADA</span>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </main>
   </div>
 </div>
