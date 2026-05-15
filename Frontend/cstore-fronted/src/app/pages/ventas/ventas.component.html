@@ -86,8 +86,6 @@
         <select [(ngModel)]="filtroEstado" (ngModelChange)="aplicarFiltros()">
           <option value="">Todos los estados</option>
           <option value="COMPLETADA">Completada</option>
-          <option value="PENDIENTE">Pendiente</option>
-          <option value="ANULADA">Anulada</option>
         </select>
       </div>
 
@@ -106,56 +104,45 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Fecha</th>
+                <th>Comprobante</th>
                 <th>Cliente</th>
                 <th>Email cliente</th>
                 <th>Cajero</th>
                 <th>Método pago</th>
-                <th>Comprobante</th>
+                <th>Subtotal</th>
+                <th>IGV</th>
                 <th>Total</th>
-                <th>Estado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let v of ventasFiltradas">
                 <td><span class="id-badge">#{{ v.id }}</span></td>
-                <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td>{{ v.nombreCliente || '—' }}</td>
-                <td class="email-col">{{ v.emailCliente || '—' }}</td>
-                <td class="email-col">{{ v.usuarioEmail }}</td>
+                <td>{{ v.serie }}-{{ v.correlativo }}</td>
+                <td>{{ v.nombre || '—' }}</td>
+                <td class="email-col">{{ v.email || '—' }}</td>
+                <td class="email-col">{{ v.createdby || '—' }}</td>
                 <td>
-                  <span class="badge-metodo" *ngIf="v.pagoMetodo">{{ v.pagoMetodo }}</span>
-                  <span *ngIf="!v.pagoMetodo">—</span>
+                  <span class="badge-metodo" *ngIf="v.metodo_pago">{{ v.metodo_pago }}</span>
+                  <span *ngIf="!v.metodo_pago">—</span>
                 </td>
-                <td>
-                  <span class="badge-tipo" *ngIf="v.comprobanteTipo">{{ v.comprobanteTipo }}</span>
-                  <span *ngIf="!v.comprobanteTipo" class="sin-comp">Sin comprobante</span>
-                </td>
-                <td class="total-col">S/ {{ v.total | number:'1.2-2' }}</td>
-                <td>
-                  <span class="badge-estado"
-                    [class.completada]="v.estado === 'COMPLETADA'"
-                    [class.anulada]="v.estado === 'ANULADA'"
-                    [class.pendiente]="v.estado === 'PENDIENTE'">
-                    {{ v.estado }}
-                  </span>
-                </td>
+                <td>S/ {{ v.subtotal | number:'1.2-2' }}</td>
+                <td>S/ {{ v.igv | number:'1.2-2' }}</td>
+                <td class="total-col">S/ {{ v.totalConIgv | number:'1.2-2' }}</td>
                 <td>
                   <div class="acciones">
                     <button
                       class="btn-icon pdf"
                       title="Descargar PDF"
-                      (click)="descargarPdf(v.comprobanteUuid)"
-                      [disabled]="!v.comprobanteUuid">
+                      (click)="descargarPdf(v.uuid)"
+                      [disabled]="!v.uuid">
                       <i class="fas fa-file-pdf"></i>
                     </button>
                     <button
                       class="btn-icon anular"
-                      title="Anular venta"
-                      (click)="anularVenta(v.id)"
-                      [disabled]="v.estado === 'ANULADA'">
-                      <i class="fas fa-ban"></i>
+                      title="Eliminar venta"
+                      (click)="borrarVenta(v.id)">
+                      <i class="fas fa-trash"></i>
                     </button>
                   </div>
                 </td>

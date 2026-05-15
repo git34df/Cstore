@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import Swal from 'sweetalert2';
-import { VentaService } from '../../core/services/venta.service';
+import { BillService } from '../../core/services/bill.service';
 import { TokenService } from '../../core/services/token.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
@@ -24,12 +24,11 @@ export class VentasComponent implements OnInit {
   nombreUsuario = '';
   inicialesUsuario = '';
 
-  // Filtros
   filtroTexto = '';
   filtroEstado = '';
 
   constructor(
-    private ventaService: VentaService,
+    private billService: BillService,
     private tokenService: TokenService,
     private authService: AuthService,
     private router: Router
@@ -50,8 +49,8 @@ export class VentasComponent implements OnInit {
 
   cargarVentas(): void {
     this.cargando = true;
-    this.ventaService.getVentas().subscribe({
-      next: (res) => {
+    this.billService.getBills().subscribe({
+      next: (res: any[]) => {
         this.ventas = res;
         this.aplicarFiltros();
         this.cargando = false;
@@ -70,39 +69,34 @@ export class VentasComponent implements OnInit {
       const q = this.filtroTexto.toLowerCase().trim();
       resultado = resultado.filter(
         (v) =>
-          v.nombreCliente?.toLowerCase().includes(q) ||
-          v.emailCliente?.toLowerCase().includes(q) ||
-          v.usuarioEmail?.toLowerCase().includes(q) ||
+          v.nombre?.toLowerCase().includes(q) ||
+          v.email?.toLowerCase().includes(q) ||
+          v.createdby?.toLowerCase().includes(q) ||
           String(v.id).includes(q)
       );
     }
 
-    if (this.filtroEstado) {
-      resultado = resultado.filter((v) => v.estado === this.filtroEstado);
-    }
-
+    // Bill no tiene estado, el filtro de estado no aplica
     this.ventasFiltradas = resultado;
   }
 
-  anularVenta(id: number): void {
+  borrarVenta(id: number): void {
     Swal.fire({
-      title: '¿Anular esta venta?',
-      text: 'Se revertirán los pagos asociados. Esta acción no se puede deshacer.',
+      title: '¿Eliminar esta venta?',
+      text: 'Esta acción no se puede deshacer.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',
       cancelButtonText: 'Cancelar',
-      confirmButtonText: 'Sí, anular',
+      confirmButtonText: 'Sí, eliminar',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.ventaService.anularVenta(id).subscribe({
+        this.billService.deleteBill(id).subscribe({
           next: () => {
-            Swal.fire('Anulada', 'La venta fue anulada correctamente', 'success');
+            Swal.fire('Eliminada', 'La venta fue eliminada correctamente', 'success');
             this.cargarVentas();
           },
-          error: (err) => {
-            Swal.fire('Error', err?.error || 'No se pudo anular la venta', 'error');
-          },
+          error: () => Swal.fire('Error', 'No se pudo eliminar la venta', 'error'),
         });
       }
     });
@@ -113,7 +107,7 @@ export class VentasComponent implements OnInit {
       Swal.fire('Sin comprobante', 'Esta venta no tiene comprobante PDF', 'info');
       return;
     }
-    this.ventaService.getPdf(uuid).subscribe({
+    this.billService.getPdf(uuid).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
         const link = document.createElement('a');
@@ -131,16 +125,9 @@ export class VentasComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  // ── Totales rápidos ──────────────────────────────────────────
-  get totalCompletadas(): number {
-    return this.ventas.filter((v) => v.estado === 'COMPLETADA').length;
-  }
-  get totalAnuladas(): number {
-    return this.ventas.filter((v) => v.estado === 'ANULADA').length;
-  }
+  get totalCompletadas(): number { return this.ventas.length; }
+  get totalAnuladas(): number { return 0; }
   get montoTotal(): number {
-    return this.ventas
-      .filter((v) => v.estado === 'COMPLETADA')
-      .reduce((acc, v) => acc + (v.total ?? 0), 0);
+    return this.ventas.reduce((acc, v) => acc + (v.totalConIgv ?? 0), 0);
   }
 }
