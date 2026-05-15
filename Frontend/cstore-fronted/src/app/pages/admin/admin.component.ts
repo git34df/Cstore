@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import { TokenService } from '../../core/services/token.service';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { AuthService } from '../../core/services/auth.service';
-import { VentaService } from '../../core/services/venta.service';
+import { BillService } from '../../core/services/bill.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule, UpperCasePipe, SlicePipe } from '@angular/common';
 
@@ -32,7 +32,7 @@ export class AdminComponent implements OnInit {
     private tokenService: TokenService,
     private dashboardService: DashboardService,
     private authService: AuthService,
-    private ventaService: VentaService,
+    private billService: BillService,
     private router: Router
   ) {}
 
@@ -49,23 +49,21 @@ export class AdminComponent implements OnInit {
       }
     }
 
-    // Métricas del dashboard
+    // Métricas del dashboard + ventas desde la misma fuente (tabla factura)
     this.dashboardService.getMetrics().subscribe({
       next: (res) => {
-        this.totalCategorias = res.categoria || 0;
-        this.totalProductos  = res.producto  || 0;
-        this.totalFacturas   = res.Facturas  || 0;
+        this.totalCategorias = res.categoria     || 0;
+        this.totalProductos  = res.producto      || 0;
+        this.totalFacturas   = res.Facturas      || 0;
+        this.totalVentas     = res.Facturas      || 0;
+        this.montoTotal      = res.totalIngresos || 0;
       },
       error: (err) => console.error('Error métricas:', err),
     });
 
-    // Últimas ventas
-    this.ventaService.getVentas().subscribe({
-      next: (res) => {
-        this.totalVentas = res.length;
-        this.montoTotal  = res
-          .filter((v) => v.estado === 'COMPLETADA')
-          .reduce((acc, v) => acc + (v.total ?? 0), 0);
+    // Últimas ventas para la tabla del inicio
+    this.billService.getBills().subscribe({
+      next: (res: any[]) => {
         this.ultimasVentas = res.slice(0, 6);
         this.cargandoVentas = false;
       },
