@@ -330,7 +330,7 @@ public class BillServicelmpl implements BillService {
     private String numeroALetras(double monto) {
         int entero   = (int) monto;
         int centavos = (int) Math.round((monto - entero) * 100);
-        return entero + " CON " + String.format("%02d", centavos) + "/100";
+        return entero + " CON " + String.format("%02d", centavos);
     }
 
     // ─────────────────────────────────────────────────────────
