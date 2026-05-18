@@ -1,131 +1,132 @@
 <!-- dashboard.component.html -->
-<div class="dashboard-container">
-  <div class="dashboard-header">
-    <h1>Dashboard</h1>
-    <p *ngIf="user">Bienvenido, <strong>{{ user.unique_name || user.sub }}</strong></p>
+<div class="db-container">
+
+  <!-- Header -->
+  <div class="db-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p *ngIf="user">
+        Bienvenido, <strong>{{ user.unique_name || user.sub }}</strong>
+      </p>
+    </div>
   </div>
 
   <!-- Loading -->
-  <div *ngIf="loading" class="loading">
+  <div *ngIf="loading" class="db-loading">
     <div class="spinner"></div>
-    <p>Cargando datos...</p>
+    <span>Cargando datos...</span>
   </div>
 
   <!-- Error -->
-  <div *ngIf="errorMessage && !loading" class="error-message">
-    <i class="icon-error">⚠️</i>
+  <div *ngIf="errorMessage && !loading" class="db-error">
+    <span class="error-icon">⚠️</span>
     <p>{{ errorMessage }}</p>
   </div>
 
-  <!-- Dashboard Content -->
-  <div *ngIf="!loading && !errorMessage && metrics" class="dashboard-content">
-    
-    <!-- KPIs Grid -->
-    <div class="kpi-grid">
-      <!-- Total Ingresos -->
-      <div class="kpi-card ingresos">
-        <div class="kpi-icon">💰</div>
-        <div class="kpi-content">
-          <h3>Total Ingresos</h3>
-          <p class="kpi-value">S/ {{ totalIngresos.toFixed(2) }}</p>
-          <span class="kpi-label">Suma de todas las facturas</span>
+  <!-- Contenido principal -->
+  <ng-container *ngIf="!loading && !errorMessage && metrics">
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+
+      <div class="kpi-card">
+        <div class="kpi-icon purple">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-label">Total ingresos</span>
+          <span class="kpi-value">S/ {{ totalIngresos.toLocaleString('es-PE', { minimumFractionDigits: 2 }) }}</span>
+          <span class="kpi-sub">Suma de todas las facturas</span>
         </div>
       </div>
 
-      <!-- Stock Total -->
-      <div class="kpi-card stock">
-        <div class="kpi-icon">📦</div>
-        <div class="kpi-content">
-          <h3>Stock Total</h3>
-          <p class="kpi-value">{{ stockTotal }}</p>
-          <span class="kpi-label">Unidades en inventario</span>
+      <div class="kpi-card">
+        <div class="kpi-icon teal">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          </svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-label">Stock total</span>
+          <span class="kpi-value">{{ stockTotal }}</span>
+          <span class="kpi-sub">Unidades en inventario</span>
         </div>
       </div>
 
-      <!-- Precio Promedio -->
-      <div class="kpi-card precio">
-        <div class="kpi-icon">💵</div>
-        <div class="kpi-content">
-          <h3>Precio Promedio</h3>
-          <p class="kpi-value">S/ {{ precioPromedio.toFixed(2) }}</p>
-          <span class="kpi-label">Por producto</span>
+      <div class="kpi-card">
+        <div class="kpi-icon blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+        </div>
+        <div class="kpi-info">
+          <span class="kpi-label">Precio promedio</span>
+          <span class="kpi-value">S/ {{ precioPromedio.toLocaleString('es-PE', { minimumFractionDigits: 2 }) }}</span>
+          <span class="kpi-sub">Por producto</span>
         </div>
       </div>
+
     </div>
 
-    <!-- Charts Section -->
-    <div class="charts-container">
-      
-      <!-- Top Productos por Unidades -->
+    <!-- Charts -->
+    <div class="charts-row">
+
       <div class="chart-card">
-        <h3 class="chart-title">
-          <span class="chart-icon">📊</span>
-          Top Productos por Unidades Vendidas
-        </h3>
-        <div class="chart-content">
+        <div class="chart-header">
+          <span class="chart-title">Top productos por unidades vendidas</span>
+        </div>
+        <div class="chart-wrapper">
           <div *ngIf="topProductosUnidades.length === 0" class="no-data">
-            No hay datos de ventas disponibles
+            Sin datos de ventas
           </div>
-          <div *ngFor="let producto of topProductosUnidades" class="bar-item">
-            <div class="bar-label">
-              <span class="producto-nombre">{{ producto.nombre }}</span>
-              <span class="producto-valor">{{ producto.unidades }} unidades</span>
-            </div>
-            <div class="bar-container">
-              <div 
-                class="bar-fill unidades" 
-                [style.width]="getBarWidth(producto.unidades, getMaxValue(topProductosUnidades, 'unidades'))">
-              </div>
-            </div>
-          </div>
+          <canvas *ngIf="topProductosUnidades.length > 0"
+            #chartUnidades
+            role="img"
+            aria-label="Gráfico de barras con top productos por unidades vendidas">
+          </canvas>
         </div>
       </div>
 
-      <!-- Top Productos por Ingresos -->
       <div class="chart-card">
-        <h3 class="chart-title">
-          <span class="chart-icon">💸</span>
-          Top Productos por Ingresos Generados
-        </h3>
-        <div class="chart-content">
+        <div class="chart-header">
+          <span class="chart-title">Top productos por ingresos generados</span>
+        </div>
+        <div class="chart-wrapper">
           <div *ngIf="topProductosIngresos.length === 0" class="no-data">
-            No hay datos de ingresos disponibles
+            Sin datos de ingresos
           </div>
-          <div *ngFor="let producto of topProductosIngresos" class="bar-item">
-            <div class="bar-label">
-              <span class="producto-nombre">{{ producto.nombre }}</span>
-              <span class="producto-valor">S/ {{ producto.ingresos.toFixed(2) }}</span>
-            </div>
-            <div class="bar-container">
-              <div 
-                class="bar-fill ingresos" 
-                [style.width]="getBarWidth(producto.ingresos, getMaxValue(topProductosIngresos, 'ingresos'))">
-              </div>
-            </div>
-          </div>
+          <canvas *ngIf="topProductosIngresos.length > 0"
+            #chartIngresos
+            role="img"
+            aria-label="Gráfico de barras con top productos por ingresos generados">
+          </canvas>
         </div>
       </div>
 
     </div>
 
-    <!-- Métricas básicas (opcional, por si quieres mantenerlas) -->
-    <div class="basic-metrics">
-      <div class="basic-metric">
-        <span class="metric-label">Facturas:</span>
-        <span class="metric-value">{{ metrics.Facturas }}</span>
+    <!-- Footer métricas básicas -->
+    <div class="footer-row">
+      <div class="footer-card">
+        <span class="footer-num">{{ metrics.Facturas }}</span>
+        <span class="footer-lbl">Facturas</span>
       </div>
-      <div class="basic-metric">
-        <span class="metric-label">Productos:</span>
-        <span class="metric-value">{{ metrics.producto }}</span>
+      <div class="footer-card">
+        <span class="footer-num">{{ metrics.producto }}</span>
+        <span class="footer-lbl">Productos</span>
       </div>
-      <div class="basic-metric">
-        <span class="metric-label">Categorías:</span>
-        <span class="metric-value">{{ metrics.categoria }}</span>
+      <div class="footer-card">
+        <span class="footer-num">{{ metrics.categoria }}</span>
+        <span class="footer-lbl">Categorías</span>
       </div>
     </div>
-  </div>
+
+  </ng-container>
 </div>
-
-
-
-
