@@ -8,7 +8,7 @@ import { TokenService } from './token.service';
   providedIn: 'root',
 })
 export class ClienteService {
-  private apiUrl = `${environment.apiUrl}/cliente`;
+  private apiUrl = `${environment.apiUrl}/Cliente`;
 
   constructor(
     private http: HttpClient,
