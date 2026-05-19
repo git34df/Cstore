@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class CategoriaServicelmpl implements CategoriaService {
+public class CategoriaServiceImpl implements CategoriaService {
 
 
     @Autowired

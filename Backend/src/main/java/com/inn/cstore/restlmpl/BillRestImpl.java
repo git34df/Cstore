@@ -16,7 +16,7 @@ import com.inn.cstore.utils.CstoreUtils;
 
 
 @RestController
-public class BillRestlmpl implements BillRest {
+public class BillRestImpl implements BillRest {
 
     @Autowired
     BillService billService;

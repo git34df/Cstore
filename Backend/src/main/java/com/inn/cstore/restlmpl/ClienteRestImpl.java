@@ -16,7 +16,7 @@ import com.inn.cstore.utils.CstoreUtils;
 import com.inn.cstore.wrapper.ClienteWrapper;
 
 @RestController
-public class ClienteRestlmpl implements ClienteRest {
+public class ClienteRestImpl implements ClienteRest {
 
     @Autowired
     ClienteService clienteService;

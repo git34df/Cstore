@@ -49,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class BillServicelmpl implements BillService {
+public class BillServiceImpl implements BillService {
 
     // ── Datos del emisor (CheapStore) ─────────────────────────
     private static final String EMISOR_RUC          = "20123456789";

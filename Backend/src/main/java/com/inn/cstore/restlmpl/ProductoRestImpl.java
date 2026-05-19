@@ -16,7 +16,7 @@ import com.inn.cstore.utils.CstoreUtils;
 import com.inn.cstore.wrapper.ProductoWrapper;
 
 @RestController
-public class ProductoRestlmpl implements ProductoRest {
+public class ProductoRestImpl implements ProductoRest {
 
     @Autowired
     ProductoService productoService;

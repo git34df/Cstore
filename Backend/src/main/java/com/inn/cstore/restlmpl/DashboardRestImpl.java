@@ -10,7 +10,7 @@ import com.inn.cstore.rest.DashboardRest;
 import com.inn.cstore.service.DashboardService;
 
 @RestController
-public class DashboardRestlmpl implements DashboardRest {
+public class DashboardRestImpl implements DashboardRest {
 
     @Autowired
 

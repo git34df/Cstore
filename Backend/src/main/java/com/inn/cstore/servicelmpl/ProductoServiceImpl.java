@@ -21,7 +21,7 @@ import com.inn.cstore.wrapper.ProductoWrapper;
 
 
 @Service
-public class ProductoServicelmpl implements ProductoService {
+public class ProductoServiceImpl implements ProductoService {
 
     @Autowired
     ProductoDao productoDao;

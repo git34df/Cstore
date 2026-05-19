@@ -19,7 +19,7 @@ import com.inn.cstore.wrapper.UsuarioWrapper;
 
 
 @RestController
-public class UsuarioRestlmpl implements UsuarioRest {
+public class UsuarioRestImpl implements UsuarioRest {
 
     @Autowired
     UsuarioService usuarioservice;

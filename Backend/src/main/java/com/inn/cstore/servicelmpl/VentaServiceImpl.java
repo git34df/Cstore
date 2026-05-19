@@ -56,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class VentaServicelmpl implements VentaService {
+public class VentaServiceImpl implements VentaService {
 
     @Autowired
     private JwtFilter jwtFilter;

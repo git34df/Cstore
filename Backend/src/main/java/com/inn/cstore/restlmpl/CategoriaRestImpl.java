@@ -17,7 +17,7 @@ import com.inn.cstore.utils.CstoreUtils;
 
 
 @RestController
-public class CategoriaRestlmpl implements CategoriaRest {
+public class CategoriaRestImpl implements CategoriaRest {
 
 
     @Autowired

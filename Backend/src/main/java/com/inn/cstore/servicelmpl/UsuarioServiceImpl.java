@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class UsuarioServicelmpl implements UsuarioService {
+public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     UsuarioDao usuarioDao;

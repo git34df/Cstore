@@ -20,7 +20,7 @@ import com.inn.cstore.POJO.Bill;
 import com.inn.cstore.service.DashboardService;
 
 @Service
-public class DashboardServicelmpl implements DashboardService {
+public class DashboardServiceImpl implements DashboardService {
 
     @Autowired
     CategoriaDao categoriaDao;

@@ -15,7 +15,7 @@ import com.inn.cstore.utils.CstoreUtils;
 import com.inn.cstore.wrapper.VentaWrapper;
 
 @RestController
-public class VentaRestlmpl implements VentaRest {
+public class VentaRestImpl implements VentaRest {
 
     @Autowired
     VentaService ventaService;

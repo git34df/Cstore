@@ -26,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class ClienteServicelmpl implements ClienteService {
+public class ClienteServiceLmpl implements ClienteService {
 
     @Autowired
     private ClienteDao clienteDao;
