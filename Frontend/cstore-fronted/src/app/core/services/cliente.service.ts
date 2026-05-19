@@ -10,7 +10,10 @@ import { TokenService } from './token.service';
 export class ClienteService {
   private apiUrl = `${environment.apiUrl}/cliente`;
 
-  constructor(private http: HttpClient, private tokenService: TokenService) {}
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService,
+  ) {}
 
   private getHeaders(): HttpHeaders {
     const token = this.tokenService.getToken();
@@ -22,14 +25,13 @@ export class ClienteService {
 
   // Lista todos los clientes con resumen de compras
   getAllClientes(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/getAllClientes`, {
+    return this.http.get<any[]>(`${this.apiUrl}/getAll`, {
       headers: this.getHeaders(),
     });
   }
 
-  // Detalle completo de un cliente (historial de facturas)
   getClienteResumen(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/getResumen/${id}`, {
+    return this.http.get<any>(`${this.apiUrl}/resumen/${id}`, {
       headers: this.getHeaders(),
     });
   }
