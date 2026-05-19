@@ -63,6 +63,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard, AdminGuard],
   },
 
+  {
+    path: 'cliente',
+    loadComponent: () =>
+      import('./pages/Cliente/cliente.component').then((m) => m.ClienteComponent),
+    canActivate: [AuthGuard, AdminGuard],
+  },
+
   // ── Solo USUARIO (autenticado, cualquier rol) ────────────────
   {
     path: 'user-home',
