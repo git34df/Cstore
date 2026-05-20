@@ -44,7 +44,7 @@ export class UserHomeComponent implements OnInit {
       next: (res: any[]) => {
         const todas = Array.isArray(res) ? res : [];
         const mias  = todas.filter((f: any) =>
-          f.email?.toLowerCase() === this.emailUsuario?.toLowerCase()
+          f.createdby?.toLowerCase() === this.emailUsuario?.toLowerCase()
         );
         this.totalMisVentas = mias.length;
         this.misVentas      = mias.slice(0, 5);
