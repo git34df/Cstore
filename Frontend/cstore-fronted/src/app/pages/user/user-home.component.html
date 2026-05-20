@@ -90,42 +90,49 @@
 
       <!-- Mis últimas ventas -->
       <div class="section-ventas">
-        <p class="section-title">Mis últimas ventas</p>
+        <div class="ventas-header">
+          <p class="section-title" style="margin:0">Mis últimas ventas</p>
+          <button class="btn-nueva-venta" (click)="irAOrdenes()" *ngIf="totalMisVentas > 0">
+            Nueva venta <i class="fas fa-plus"></i>
+          </button>
+        </div>
 
-        <div *ngIf="cargando" class="empty-state">Cargando...</div>
+        <!-- Cargando -->
+        <div *ngIf="cargando" class="empty-state">
+          Cargando...
+        </div>
 
+        <!-- Sin ventas -->
         <div *ngIf="!cargando && misVentas.length === 0" class="empty-state">
           <i class="fas fa-inbox"></i>
           <p>Aún no tienes ventas registradas</p>
-          <button class="btn-nueva-venta" (click)="irAOrdenes()">Generar primera venta</button>
+          <button class="btn-nueva-venta" (click)="irAOrdenes()">
+            Generar primera venta
+          </button>
         </div>
 
+        <!-- Tabla -->
         <div class="mini-tabla" *ngIf="!cargando && misVentas.length > 0">
           <table>
             <thead>
               <tr>
                 <th>#</th>
-                <th>Fecha</th>
+                <th>Serie</th>
                 <th>Cliente</th>
-                <th>Total</th>
                 <th>Método pago</th>
+                <th>Total</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let v of misVentas">
                 <td>{{ v.id }}</td>
-                <td>{{ v.fecha | date:'dd/MM/yyyy HH:mm' }}</td>
-                <td>{{ v.nombreCliente || '—' }}</td>
-                <td>S/ {{ v.total | number:'1.2-2' }}</td>
-                <td>{{ v.pagoMetodo || '—' }}</td>
+                <td>{{ v.serie }}-{{ v.correlativo }}</td>
+                <td>{{ v.nombre || v.name || '—' }}</td>
+                <td>{{ v.metodo_pago || '—' }}</td>
+                <td>S/ {{ v.totalConIgv | number:'1.2-2' }}</td>
                 <td>
-                  <span class="badge-estado"
-                    [class.completada]="v.estado === 'COMPLETADA'"
-                    [class.anulada]="v.estado === 'ANULADA'"
-                    [class.pendiente]="v.estado === 'PENDIENTE'">
-                    {{ v.estado }}
-                  </span>
+                  <span class="badge-estado completada">COMPLETADA</span>
                 </td>
               </tr>
             </tbody>
@@ -134,6 +141,7 @@
             Mostrando las últimas 5 de {{ totalMisVentas }} ventas
           </p>
         </div>
+
       </div>
 
     </main>
