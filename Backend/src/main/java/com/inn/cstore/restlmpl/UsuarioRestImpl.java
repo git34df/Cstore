@@ -127,4 +127,14 @@ public class UsuarioRestImpl implements UsuarioRest {
         return CstoreUtils.getResponseEntity(CstoreConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @Override
+    public ResponseEntity<String> resetPassword(Map<String, String> requestMap) {
+        try {
+            return usuarioservice.resetPassword(requestMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return CstoreUtils.getResponseEntity(CstoreConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
