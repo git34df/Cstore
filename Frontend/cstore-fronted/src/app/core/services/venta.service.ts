@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/enviroment';
+import { TokenService } from './token.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,41 +10,50 @@ import { environment } from '../../enviroments/enviroment';
 export class VentaService {
   private apiUrl = `${environment.apiUrl}/Venta`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tokenService: TokenService) {}
 
-  // GET /Venta/getVentas
-  // Admin → todas las ventas | Usuario → solo las propias (el backend discrimina por JWT)
+  private getHeaders(): HttpHeaders {
+    const token = this.tokenService.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    });
+  }
+
   getVentas(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/getVentas`);
+    return this.http.get<any[]>(`${this.apiUrl}/getVentas`, {
+      headers: this.getHeaders(),
+    });
   }
 
-  // GET /Venta/getVenta/{id}
   getVentaById(id: number): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/getVenta/${id}`);
+    return this.http.get<any>(`${this.apiUrl}/getVenta/${id}`, {
+      headers: this.getHeaders(),
+    });
   }
 
-  // POST /Venta/registrar
-  // Body: { detalle:[{productoId, cantidad, precioUnitario}], total,
-  //         nombreCliente, emailCliente, telefonoCliente, metodoPago, tipoComprobante }
-  registrarVenta(payload: {
-    detalle: { productoId: number; cantidad: number; precioUnitario: number }[];
-    total: number;
-    nombreCliente: string;
-    emailCliente: string;
-    telefonoCliente: string;
-    metodoPago: string;
-    tipoComprobante?: string;
-  }): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/registrar`, payload);
+  registrarVenta(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/registrar`, payload, {
+      headers: this.getHeaders(),
+    });
   }
 
-  // POST /Venta/anular/{id}
   anularVenta(id: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/anular/${id}`, {}, { responseType: 'text' as 'json' });
+    return this.http.post<any>(`${this.apiUrl}/anular/${id}`, {}, {
+      headers: this.getHeaders(),
+      responseType: 'text' as 'json',
+    });
   }
 
-  // POST /Venta/getPdf   Body: { uuid: "..." }
   getPdf(uuid: string): Observable<Blob> {
-    return this.http.post(`${this.apiUrl}/getPdf`, { uuid }, { responseType: 'blob' });
+    const token = this.tokenService.getToken();
+    return this.http.post(
+      `${this.apiUrl}/getPdf`,
+      { uuid },
+      {
+        responseType: 'blob',
+        headers: new HttpHeaders({ Authorization: `Bearer ${token}` }),
+      }
+    );
   }
 }
