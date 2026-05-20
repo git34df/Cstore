@@ -40,4 +40,13 @@ export class UsuarioService {
       headers: this.getHeaders(),
     });
   }
+
+  resetPassword(data: { id: string; newPassword: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/resetPassword`, data, {
+      headers: this.getHeaders(),
+      responseType: 'text',
+    });
+  }
+
+
 }

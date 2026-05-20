@@ -69,7 +69,7 @@ export class UsuarioComponent implements OnInit {
   // ── Cambiar rol ─────────────────────────────────────────
   updateRol(usuario: any) {
     const rolActual = usuario.rol ?? 'usuario';
-    const nuevoRol  = rolActual === 'admin' ? 'usuario' : 'admin';
+    const nuevoRol = rolActual === 'admin' ? 'usuario' : 'admin';
 
     Swal.fire({
       title: `¿Cambiar rol a "${nuevoRol}"?`,
@@ -78,9 +78,11 @@ export class UsuarioComponent implements OnInit {
         <span class="swal-badge ${rolActual}">${rolActual}</span> a 
         <span class="swal-badge ${nuevoRol}">${nuevoRol}</span></p>
         <p style="color:#6b7280;font-size:.9rem;margin-top:.5rem">
-          ${nuevoRol === 'admin'
-            ? '⚠️ Tendrá acceso completo al sistema.'
-            : 'Solo tendrá acceso de usuario estándar.'}
+          ${
+            nuevoRol === 'admin'
+              ? '⚠️ Tendrá acceso completo al sistema.'
+              : 'Solo tendrá acceso de usuario estándar.'
+          }
         </p>
       `,
       icon: 'warning',
@@ -104,6 +106,57 @@ export class UsuarioComponent implements OnInit {
         },
         error: () => Swal.fire('Error', 'No se pudo actualizar el rol', 'error'),
       });
+    });
+  }
+
+  // ── Resetear contraseña ─────────────────────────────────
+  resetPassword(usuario: any) {
+    Swal.fire({
+      title: `Resetear contraseña`,
+      html: `
+      <p style="margin-bottom:1rem">Define una nueva contraseña para <strong>${usuario.nombre}</strong></p>
+      <input id="nueva-password" type="password" class="swal2-input" placeholder="Nueva contraseña" />
+      <input id="confirmar-password" type="password" class="swal2-input" placeholder="Confirmar contraseña" />
+    `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#2962be',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Resetear',
+      preConfirm: () => {
+        const nueva = (document.getElementById('nueva-password') as HTMLInputElement).value;
+        const confirmar = (document.getElementById('confirmar-password') as HTMLInputElement).value;
+
+        if (!nueva || nueva.length < 4) {
+          Swal.showValidationMessage('La contraseña debe tener al menos 4 caracteres');
+          return false;
+        }
+        if (nueva !== confirmar) {
+          Swal.showValidationMessage('Las contraseñas no coinciden');
+          return false;
+        }
+        return { newPassword: nueva };
+      },
+    }).then((result) => {
+      if (!result.isConfirmed || !result.value) return;
+
+      this.usuarioService
+        .resetPassword({
+          id: String(usuario.id),
+          newPassword: result.value.newPassword,
+        })
+        .subscribe({
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: 'Contraseña reseteada',
+              text: `La contraseña de ${usuario.nombre} fue actualizada.`,
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          },
+          error: () => Swal.fire('Error', 'No se pudo resetear la contraseña', 'error'),
+        });
     });
   }
 

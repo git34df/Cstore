@@ -290,3 +290,15 @@ $surface: #ffffff;
   .actions { flex-direction: column; }
 }
 
+.btn-reset {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+.btn-reset:hover {
+  background: #f59e0b;
+  color: #fff;
+  border-color: #f59e0b;
+}
+
