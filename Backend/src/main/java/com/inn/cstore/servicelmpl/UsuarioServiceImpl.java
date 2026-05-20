@@ -266,4 +266,30 @@ public class UsuarioServiceImpl implements UsuarioService {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @Override
+public ResponseEntity<String> resetPassword(Map<String, String> requestMap) {
+    try {
+        if (!jwtFilter.isAdmin()) {
+            return CstoreUtils.getResponseEntity(CstoreConstants.UNAUTHORIZED_ACCESS, HttpStatus.UNAUTHORIZED);
+        }
+        if (!requestMap.containsKey("id") || !requestMap.containsKey("newPassword")) {
+            return CstoreUtils.getResponseEntity(CstoreConstants.INVALID_DATA, HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<Usuario> optional = usuarioDao.findById(Integer.parseInt(requestMap.get("id")));
+        if (optional.isEmpty()) {
+            return CstoreUtils.getResponseEntity("Usuario no encontrado", HttpStatus.NOT_FOUND);
+        }
+
+        Usuario usuario = optional.get();
+        usuario.setPassword(requestMap.get("newPassword"));
+        usuarioDao.save(usuario);
+        return CstoreUtils.getResponseEntity("Contraseña reseteada correctamente", HttpStatus.OK);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return CstoreUtils.getResponseEntity(CstoreConstants.SOMETHING_WENT_WRONG, HttpStatus.INTERNAL_SERVER_ERROR);
+}
+
 }
