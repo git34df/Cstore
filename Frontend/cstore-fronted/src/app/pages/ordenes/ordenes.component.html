@@ -56,7 +56,7 @@
           <label>Correo electrónico <span class="req">*</span></label>
           <div class="input-wrap">
             <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-            <input type="email" formControlName="email" placeholder="contacto@empresa.com"/>
+            <input type="email" formControlName="email" placeholder="contacto@empresa.com" (blur)="onEmailChange()"/>
           </div>
           <span class="hint-error">Correo inválido</span>
         </div>

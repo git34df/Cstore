@@ -10,6 +10,7 @@ import {
 import Swal from 'sweetalert2';
 import { BillService } from '../../core/services/bill.service';
 import { ProductoService } from '../../core/services/producto.service';
+import { ClienteService } from '../../core/services/cliente.service';
 
 @Component({
   selector: 'app-bill',
@@ -22,27 +23,37 @@ export class BillComponent implements OnInit {
   facturaForm!: FormGroup;
   facturas: any[] = [];
   productosCatalogo: any[] = [];
+  clientes: any[] = [];
   loading = false;
 
   constructor(
     private fb: FormBuilder,
     private billService: BillService,
-    private productoService: ProductoService
+    private productoService: ProductoService,
+    private clienteService: ClienteService,
   ) {}
 
   ngOnInit(): void {
     this.initForm();
     this.loadBills();
     this.loadProductos();
+    this.loadClientes();
   }
 
   // ── Cargar productos ────────────────────────────────────
   loadProductos() {
     this.productoService.getProductos().subscribe({
       next: (res: any) => {
-        this.productosCatalogo = Array.isArray(res) ? res : res.data ?? [];
+        this.productosCatalogo = Array.isArray(res) ? res : (res.data ?? []);
       },
       error: (err) => console.error('Error cargando productos', err),
+    });
+  }
+
+  loadClientes() {
+    this.clienteService.getAllClientes().subscribe({
+      next: (data) => (this.clientes = data),
+      error: () => console.error('No se pudieron cargar los clientes'),
     });
   }
 
@@ -50,21 +61,21 @@ export class BillComponent implements OnInit {
   initForm() {
     this.facturaForm = this.fb.group({
       // Datos del cliente
-      nombre:           ['', Validators.required],
-      numerocontacto:   ['', Validators.required],
-      email:            ['', [Validators.required, Validators.email]],
+      nombre: ['', Validators.required],
+      numerocontacto: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       // Campos SUNAT — obligatorios para factura
-      ruc_cliente:      ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-      razon_social:     ['', Validators.required],
-      direccion_cliente:[''],
+      ruc_cliente: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      razon_social: ['', Validators.required],
+      direccion_cliente: [''],
       // Pago
-      metodo_pago:      ['', Validators.required],
+      metodo_pago: ['', Validators.required],
       // Totales (calculados)
-      subtotal:         [{ value: 0, disabled: true }],
-      igv:              [{ value: 0, disabled: true }],
-      total:            [{ value: 0, disabled: true }],
+      subtotal: [{ value: 0, disabled: true }],
+      igv: [{ value: 0, disabled: true }],
+      total: [{ value: 0, disabled: true }],
       // Detalle
-      detalleproducto:  this.fb.array([], Validators.required),
+      detalleproducto: this.fb.array([], Validators.required),
     });
   }
 
@@ -75,11 +86,11 @@ export class BillComponent implements OnInit {
   // ── Agregar fila de producto ────────────────────────────
   addProducto() {
     const grupo = this.fb.group({
-      nombre:   ['', Validators.required],
-      categoria:['', Validators.required],
+      nombre: ['', Validators.required],
+      categoria: ['', Validators.required],
       cantidad: [1, [Validators.required, Validators.min(1)]],
-      precio:   [{ value: 0, disabled: false }, Validators.required],
-      total:    [{ value: 0, disabled: true }],
+      precio: [{ value: 0, disabled: false }, Validators.required],
+      total: [{ value: 0, disabled: true }],
     });
 
     grupo.get('nombre')?.valueChanges.subscribe((nombre) => {
@@ -105,7 +116,7 @@ export class BillComponent implements OnInit {
   // ── Calcular fila ───────────────────────────────────────
   calcularFila(grupo: FormGroup) {
     const cantidad = Number(grupo.get('cantidad')?.value || 0);
-    const precio   = Number(grupo.get('precio')?.value || 0);
+    const precio = Number(grupo.get('precio')?.value || 0);
     grupo.get('total')?.setValue(cantidad * precio, { emitEvent: false });
     this.recalcularTotales();
   }
@@ -117,25 +128,25 @@ export class BillComponent implements OnInit {
       .reduce((a, b) => a + b, 0);
 
     const subtotal = Math.round((totalConIgv / 1.18) * 100) / 100;
-    const igv      = Math.round((totalConIgv - subtotal) * 100) / 100;
+    const igv = Math.round((totalConIgv - subtotal) * 100) / 100;
 
     this.facturaForm.get('subtotal')?.setValue(subtotal.toFixed(2), { emitEvent: false });
-    this.facturaForm.get('igv')?.setValue(igv.toFixed(2),           { emitEvent: false });
+    this.facturaForm.get('igv')?.setValue(igv.toFixed(2), { emitEvent: false });
     this.facturaForm.get('total')?.setValue(totalConIgv.toFixed(2), { emitEvent: false });
   }
 
   // ── Seleccionar producto del select ────────────────────
   onSelectProducto(i: number) {
-    const grupo  = this.detalleProducto.at(i) as FormGroup;
+    const grupo = this.detalleProducto.at(i) as FormGroup;
     const nombre = grupo.get('nombre')?.value;
-    const prod   = this.productosCatalogo.find((p) => p.nombre === nombre);
+    const prod = this.productosCatalogo.find((p) => p.nombre === nombre);
     if (!prod) return;
 
     const cantidad = grupo.get('cantidad')?.value || 1;
     grupo.patchValue({
       categoria: prod.categoriaName ?? prod.categoria ?? '',
-      precio:    prod.precio,
-      total:     prod.precio * cantidad,
+      precio: prod.precio,
+      total: prod.precio * cantidad,
     });
     this.recalcularTotales();
   }
@@ -151,17 +162,17 @@ export class BillComponent implements OnInit {
     const v = this.facturaForm.getRawValue();
 
     const payload = {
-      name:              v.nombre,
-      numero_contacto:   v.numerocontacto,
-      email:             v.email,
-      ruc_cliente:       v.ruc_cliente,
-      razon_social:      v.razon_social,
+      name: v.nombre,
+      numero_contacto: v.numerocontacto,
+      email: v.email,
+      ruc_cliente: v.ruc_cliente,
+      razon_social: v.razon_social,
       direccion_cliente: v.direccion_cliente,
-      metodo_pago:       v.metodo_pago,
-      total:             v.total,
-      detalleproducto:   JSON.stringify(v.detalleproducto),
-      isGenerate:        true,
-      uuid:              '',
+      metodo_pago: v.metodo_pago,
+      total: v.total,
+      detalleproducto: JSON.stringify(v.detalleproducto),
+      isGenerate: true,
+      uuid: '',
     };
 
     this.loading = true;
@@ -185,7 +196,7 @@ export class BillComponent implements OnInit {
   descargarPdf(uuid: string) {
     this.billService.getPdf(uuid).subscribe({
       next: (blob) => {
-        const url  = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+        const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
         const link = document.createElement('a');
         link.href = url;
         link.download = `Factura-${uuid}.pdf`;
@@ -225,6 +236,23 @@ export class BillComponent implements OnInit {
         });
       }
     });
+  }
+
+  onEmailChange() {
+    const email = this.facturaForm.get('email')?.value?.toLowerCase().trim();
+    if (!email) return;
+
+    const cliente = this.clientes.find((c: any) => c.email?.toLowerCase() === email);
+
+    if (cliente) {
+      this.facturaForm.patchValue({
+        nombre: cliente.nombre || '',
+        ruc_cliente: cliente.ruc || '',
+        razon_social: cliente.razonSocial || '',
+        numerocontacto: cliente.telefono || '',
+        direccion_cliente: cliente.direccion || '',
+      });
+    }
   }
 
   // ── Helpers ─────────────────────────────────────────────
