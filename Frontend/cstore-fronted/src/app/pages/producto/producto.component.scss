@@ -384,3 +384,21 @@ td.acciones {
   }
 }
 
+select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: #1a1a2e;
+  background: #fff;
+  appearance: none;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #2962be;
+  box-shadow: 0 0 0 3px rgba(41, 98, 190, 0.1);
+}
+

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductoService } from '../../core/services/producto.service';
 import { AuthService } from '../../core/services/auth.service';
+import { CategoriaService } from '../../core/services/categoria.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -17,17 +18,22 @@ export class ProductoComponent implements OnInit {
   productoForm: FormGroup;
   editing = false;
   isAdmin = false;
+  categorias: any[] = [];
 
   constructor(
     private fb: FormBuilder,
     private productoService: ProductoService,
-    private authService: AuthService
+    private authService: AuthService,
+    private categoriaService: CategoriaService,
   ) {
     this.productoForm = this.fb.group({
       id_producto: [''],
       nombre_producto: ['', [Validators.required, Validators.minLength(1)]],
       descripcion: ['', [Validators.required, Validators.minLength(4)]],
-      precio: ['', [Validators.required, Validators.min(1), Validators.pattern(/^(?!0\d)\d+(\.\d{1,2})?$/)]],
+      precio: [
+        '',
+        [Validators.required, Validators.min(1), Validators.pattern(/^(?!0\d)\d+(\.\d{1,2})?$/)],
+      ],
       stock: ['', [Validators.required, Validators.min(0), Validators.pattern(/^\d+$/)]],
       IdCategoria: ['', Validators.required],
     });
@@ -36,12 +42,20 @@ export class ProductoComponent implements OnInit {
   ngOnInit(): void {
     this.isAdmin = this.authService.isAdmin();
     this.loadProductos();
+    this.loadCategorias();
   }
 
   loadProductos() {
     this.productoService.getAll().subscribe({
       next: (data) => (this.productos = data),
       error: () => Swal.fire('Error', 'No se pudieron cargar los productos', 'error'),
+    });
+  }
+
+  loadCategorias() {
+    this.categoriaService.getAll().subscribe({
+      next: (data) => (this.categorias = data),
+      error: () => Swal.fire('Error', 'No se pudieron cargar las categorías', 'error'),
     });
   }
 
@@ -66,7 +80,8 @@ export class ProductoComponent implements OnInit {
         error: (err) => {
           if (err.status >= 200 && err.status < 300) {
             Swal.fire('Actualizado', 'Producto actualizado correctamente', 'success');
-            this.loadProductos(); this.resetForm();
+            this.loadProductos();
+            this.resetForm();
           } else {
             Swal.fire('Error', err?.error || 'No se pudo actualizar el producto', 'error');
           }
@@ -82,7 +97,8 @@ export class ProductoComponent implements OnInit {
         error: (err) => {
           if (err.status >= 200 && err.status < 300) {
             Swal.fire('Agregado', 'Producto agregado correctamente', 'success');
-            this.loadProductos(); this.resetForm();
+            this.loadProductos();
+            this.resetForm();
           } else {
             Swal.fire('Error', err?.error || 'No se pudo agregar el producto', 'error');
           }
