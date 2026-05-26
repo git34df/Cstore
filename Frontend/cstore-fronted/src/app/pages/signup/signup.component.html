@@ -21,14 +21,14 @@
           </defs>
         </svg>
       </div>
-      <h2>Crear cuenta</h2>
-      <p>Completa los datos para registrarte en CheapStore</p>
+      <h2>Registrar Usuario</h2>
+      <p>Completa los datos del Usuario</p>
     </div>
 
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" autocomplete="off">
 
       <div class="field" [class.has-error]="signupForm.get('nombre')?.invalid && signupForm.get('nombre')?.touched">
-        <label for="nombre">Nombre completo</label>
+        <label for="nombre">Nombre de Trabajador</label>
         <div class="input-wrap">
           <svg class="field-icon" viewBox="0 0 20 20" fill="none">
             <circle cx="10" cy="7" r="3" stroke="currentColor" stroke-width="1.5"/>
@@ -75,7 +75,7 @@
       </div>
 
       <button type="submit" [disabled]="loading || signupForm.invalid" [class.loading]="loading">
-        <span class="btn-text">{{ loading ? 'Registrando...' : 'Crear cuenta' }}</span>
+        <span class="btn-text">{{ loading ? 'Registrando...' : 'Registrar Usuario' }}</span>
         <svg *ngIf="!loading" class="btn-arrow" viewBox="0 0 20 20" fill="none">
           <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -99,10 +99,5 @@
       </svg>
       {{ successMsg }}
     </div>
-
-    <p class="footer-link">
-      ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
-    </p>
-
   </div>
 </div>

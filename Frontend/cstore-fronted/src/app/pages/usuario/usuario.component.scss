@@ -33,6 +33,7 @@ $surface: #ffffff;
 .card-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   padding: 1.2rem 1.8rem;
   border-bottom: 1px solid $border;
@@ -55,16 +56,60 @@ $surface: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 42px; height: 42px;
+    width: 42px;
+    height: 42px;
     border-radius: 10px;
     background: $primary-l;
     color: $primary;
     flex-shrink: 0;
-    svg { width: 22px; height: 22px; }
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  // NUEVO
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  // NUEVO
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+
+  // NUEVO
+  .btn-register {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .45rem .9rem;
+    border-radius: 9px;
+    background: $primary;
+    border: 1px solid $primary;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .85rem;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    transition: all .2s;
+
+    &:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+
+    i {
+      font-size: .8rem;
+    }
   }
 
   .btn-refresh {
-    margin-left: auto;
     display: flex;
     align-items: center;
     gap: .4rem;
@@ -79,14 +124,34 @@ $surface: #ffffff;
     cursor: pointer;
     transition: all .2s;
 
-    svg { width: 15px; height: 15px; transition: transform .3s; }
-    &:hover { background: $primary-l; color: $primary; border-color: $primary; }
-    &:disabled { opacity: .6; cursor: not-allowed; }
+    svg {
+      width: 15px;
+      height: 15px;
+      transition: transform .3s;
+    }
+
+    &:hover {
+      background: $primary-l;
+      color: $primary;
+      border-color: $primary;
+    }
+
+    &:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
   }
 }
 
-@keyframes spin-anim { to { transform: rotate(360deg); } }
-.spin { animation: spin-anim .7s linear infinite; }
+@keyframes spin-anim {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin-anim .7s linear infinite;
+}
 
 // ── Loading ────────────────────────────────────────────────────
 .loading-state {
@@ -100,7 +165,8 @@ $surface: #ffffff;
 }
 
 .spinner {
-  width: 28px; height: 28px;
+  width: 28px;
+  height: 28px;
   border: 3px solid $border;
   border-top-color: $primary;
   border-radius: 50%;
@@ -119,6 +185,7 @@ $surface: #ffffff;
 
     thead tr {
       background: #f3f4f6;
+
       th {
         padding: .6rem .9rem;
         text-align: left;
@@ -134,7 +201,10 @@ $surface: #ffffff;
     tbody tr {
       border-bottom: 1px solid $border;
       transition: background .15s;
-      &:hover { background: #fafbff; }
+
+      &:hover {
+        background: #fafbff;
+      }
 
       td {
         padding: .75rem .9rem;
@@ -145,8 +215,14 @@ $surface: #ffffff;
   }
 }
 
-.id-col { color: $muted; font-size: .82rem; }
-.muted  { color: $muted; }
+.id-col {
+  color: $muted;
+  font-size: .82rem;
+}
+
+.muted {
+  color: $muted;
+}
 
 // ── Avatar + nombre ────────────────────────────────────────────
 .user-info {
@@ -156,7 +232,8 @@ $surface: #ffffff;
 }
 
 .avatar {
-  width: 34px; height: 34px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: $primary-l;
   color: $primary;
@@ -178,7 +255,10 @@ $surface: #ffffff;
   font-size: .78rem;
   font-weight: 700;
 
-  svg { width: 13px; height: 13px; }
+  svg {
+    width: 13px;
+    height: 13px;
+  }
 
   &.admin {
     background: #fffbeb;
@@ -204,7 +284,8 @@ $surface: #ffffff;
   font-weight: 700;
 
   .dot {
-    width: 7px; height: 7px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
   }
 
@@ -212,14 +293,20 @@ $surface: #ffffff;
     background: #f0fdf4;
     color: #065f46;
     border: 1px solid #bbf7d0;
-    .dot { background: $success; }
+
+    .dot {
+      background: $success;
+    }
   }
 
   &.inactivo {
     background: #fef2f2;
     color: #991b1b;
     border: 1px solid #fecaca;
-    .dot { background: $danger; }
+
+    .dot {
+      background: $danger;
+    }
   }
 }
 
@@ -244,27 +331,45 @@ $surface: #ffffff;
   transition: all .2s;
   white-space: nowrap;
 
-  svg { width: 14px; height: 14px; }
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 
   &.btn-activar {
     background: #f0fdf4;
     color: #065f46;
     border: 1px solid #bbf7d0;
-    &:hover { background: $success; color: #fff; border-color: $success; }
+
+    &:hover {
+      background: $success;
+      color: #fff;
+      border-color: $success;
+    }
   }
 
   &.btn-desactivar {
     background: #fef2f2;
     color: #991b1b;
     border: 1px solid #fecaca;
-    &:hover { background: $danger; color: #fff; border-color: $danger; }
+
+    &:hover {
+      background: $danger;
+      color: #fff;
+      border-color: $danger;
+    }
   }
 
   &.btn-rol {
     background: #fffbeb;
     color: #92400e;
     border: 1px solid #fde68a;
-    &:hover { background: $warning; color: #fff; border-color: $warning; }
+
+    &:hover {
+      background: $warning;
+      color: #fff;
+      border-color: $warning;
+    }
   }
 }
 
@@ -275,19 +380,39 @@ $surface: #ffffff;
   color: $muted;
 
   svg {
-    width: 48px; height: 48px;
+    width: 48px;
+    height: 48px;
     opacity: .3;
     display: block;
     margin: 0 auto .8rem;
   }
 
-  p { margin: 0; font-size: .9rem; }
+  p {
+    margin: 0;
+    font-size: .9rem;
+  }
 }
 
 // ── Responsive ─────────────────────────────────────────────────
 @media (max-width: 768px) {
-  .usuarios-page { padding: 1rem; }
-  .actions { flex-direction: column; }
+
+  .usuarios-page {
+    padding: 1rem;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
 }
 
 .btn-reset {
@@ -301,4 +426,3 @@ $surface: #ffffff;
   color: #fff;
   border-color: #f59e0b;
 }
-
