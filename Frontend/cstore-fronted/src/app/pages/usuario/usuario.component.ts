@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { UsuarioService } from '../../core/services/usuario.service';
 import Swal from 'sweetalert2';
@@ -6,7 +7,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-usuario',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterLink],
   templateUrl: './usuario.component.html',
   styleUrls: ['./usuario.component.scss'],
 })
