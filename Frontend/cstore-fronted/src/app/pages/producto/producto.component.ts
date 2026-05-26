@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductoService } from '../../core/services/producto.service';
@@ -9,7 +10,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-producto',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './producto.component.html',
   styleUrls: ['./producto.component.scss'],
 })

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { CategoriaService } from '../../core/services/categoria.service';
 import { AuthService } from '../../core/services/auth.service';
 import Swal from 'sweetalert2';
@@ -8,7 +9,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-categoria',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './categoria.component.html',
   styleUrls: ['./categoria.component.scss'],
 })
