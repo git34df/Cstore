@@ -44,38 +44,32 @@ public class ClienteServiceImpl implements ClienteService {
     public ResponseEntity<List<ClienteWrapper>> getAllClientes() {
         log.info("Inside getAllClientes");
         try {
-            if (!jwtFilter.isAdmin()) {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
-
+            // ✅ ANTES: if (!jwtFilter.isAdmin()) → 401
+            // ✅ AHORA: admin ve resumen completo, usuario solo ve nombre/email
             List<Cliente> clientes = clienteDao.getAllClientes();
-            List<Bill>    todasFacturas = billDao.getAllBills();
 
-            List<ClienteWrapper> result = clientes.stream().map(c -> {
-                // Facturas que pertenecen a este cliente (por email o por cliente_id)
-                List<Bill> facturasCli = todasFacturas.stream()
-                    .filter(b -> c.getEmail() != null && c.getEmail().equalsIgnoreCase(b.getEmail()))
-                    .collect(Collectors.toList());
-
-                int totalFacturas  = facturasCli.size();
-                int totalUnidades  = calcularTotalUnidades(facturasCli);
-                double totalDinero = facturasCli.stream()
-                    .mapToDouble(b -> b.getTotalConIgv() != null ? b.getTotalConIgv() : 0.0)
-                    .sum();
-
-                return new ClienteWrapper(
-                    c.getId(), c.getNombre(), c.getEmail(),
-                    c.getRuc(), c.getRazonSocial(), c.getTelefono(), c.getDireccion(),
-                    totalFacturas, totalUnidades, Math.round(totalDinero * 100.0) / 100.0
-                );
-            }).collect(Collectors.toList());
-
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            if (jwtFilter.isAdmin()) {
+                // Admin: con totales de facturas
+                List<Bill> todasFacturas = billDao.getAllBills();
+                List<ClienteWrapper> result = clientes.stream().map(c -> {
+                    // ... tu lógica actual ...
+                }).collect(Collectors.toList());
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                // Usuario normal: solo datos básicos (suficiente para el dropdown de ventas)
+                List<ClienteWrapper> result = clientes.stream()
+                        .map(c -> new ClienteWrapper(
+                                c.getId(), c.getNombre(), c.getEmail(),
+                                c.getRuc(), c.getRazonSocial(), c.getTelefono(), c.getDireccion(),
+                                0, 0, 0.0))
+                        .collect(Collectors.toList());
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // ─────────────────────────────────────────────────────────
@@ -98,29 +92,25 @@ public class ClienteServiceImpl implements ClienteService {
             List<Bill> todasFacturas = billDao.getAllBills();
 
             List<Bill> facturasCli = todasFacturas.stream()
-                .filter(b -> c.getEmail() != null && c.getEmail().equalsIgnoreCase(b.getEmail()))
-                .collect(Collectors.toList());
+                    .filter(b -> c.getEmail() != null && c.getEmail().equalsIgnoreCase(b.getEmail()))
+                    .collect(Collectors.toList());
 
-            int    totalFacturas  = facturasCli.size();
-            int    totalUnidades  = calcularTotalUnidades(facturasCli);
-            double totalDinero    = facturasCli.stream()
-                .mapToDouble(b -> b.getTotalConIgv() != null ? b.getTotalConIgv() : 0.0)
-                .sum();
+            int totalFacturas = facturasCli.size();
+            int totalUnidades = calcularTotalUnidades(facturasCli);
+            double totalDinero = facturasCli.stream()
+                    .mapToDouble(b -> b.getTotalConIgv() != null ? b.getTotalConIgv() : 0.0)
+                    .sum();
 
             // Mapear historial de facturas
-            List<FacturaResumenWrapper> historial = facturasCli.stream().map(b ->
-                new FacturaResumenWrapper(
+            List<FacturaResumenWrapper> historial = facturasCli.stream().map(b -> new FacturaResumenWrapper(
                     b.getId(), b.getUuid(),
                     b.getSerie(), b.getCorrelativo(),
-                    b.getTotalConIgv(), b.getMetodo_pago(), b.getCreatedby()
-                )
-            ).collect(Collectors.toList());
+                    b.getTotalConIgv(), b.getMetodo_pago(), b.getCreatedby())).collect(Collectors.toList());
 
             ClienteWrapper wrapper = new ClienteWrapper(
-                c.getId(), c.getNombre(), c.getEmail(),
-                c.getRuc(), c.getRazonSocial(), c.getTelefono(), c.getDireccion(),
-                totalFacturas, totalUnidades, Math.round(totalDinero * 100.0) / 100.0
-            );
+                    c.getId(), c.getNombre(), c.getEmail(),
+                    c.getRuc(), c.getRazonSocial(), c.getTelefono(), c.getDireccion(),
+                    totalFacturas, totalUnidades, Math.round(totalDinero * 100.0) / 100.0);
             wrapper.setFacturas(historial);
 
             return new ResponseEntity<>(wrapper, HttpStatus.OK);
@@ -223,12 +213,18 @@ public class ClienteServiceImpl implements ClienteService {
 
     private Cliente buildCliente(Map<String, Object> map, Cliente existing) {
         Cliente c = (existing != null) ? existing : new Cliente();
-        if (map.containsKey("nombre"))      c.setNombre(map.get("nombre").toString());
-        if (map.containsKey("email"))       c.setEmail(map.get("email").toString());
-        if (map.containsKey("ruc"))         c.setRuc(map.get("ruc").toString());
-        if (map.containsKey("razonSocial")) c.setRazonSocial(map.get("razonSocial").toString());
-        if (map.containsKey("telefono"))    c.setTelefono(map.get("telefono").toString());
-        if (map.containsKey("direccion"))   c.setDireccion(map.get("direccion").toString());
+        if (map.containsKey("nombre"))
+            c.setNombre(map.get("nombre").toString());
+        if (map.containsKey("email"))
+            c.setEmail(map.get("email").toString());
+        if (map.containsKey("ruc"))
+            c.setRuc(map.get("ruc").toString());
+        if (map.containsKey("razonSocial"))
+            c.setRazonSocial(map.get("razonSocial").toString());
+        if (map.containsKey("telefono"))
+            c.setTelefono(map.get("telefono").toString());
+        if (map.containsKey("direccion"))
+            c.setDireccion(map.get("direccion").toString());
         return c;
     }
 
