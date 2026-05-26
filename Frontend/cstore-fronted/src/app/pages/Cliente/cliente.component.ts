@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ClienteService } from '../../core/services/cliente.service';
 import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cliente',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.scss'],
 })

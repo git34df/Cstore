@@ -7,6 +7,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import Swal from 'sweetalert2';
 import { BillService } from '../../core/services/bill.service';
 import { ProductoService } from '../../core/services/producto.service';
@@ -15,7 +16,7 @@ import { ClienteService } from '../../core/services/cliente.service';
 @Component({
   selector: 'app-bill',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,RouterLink],
   templateUrl: './ordenes.component.html',
   styleUrls: ['./ordenes.component.scss'],
 })
