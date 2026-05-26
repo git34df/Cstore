@@ -22,7 +22,6 @@ export class AuthInterceptor implements HttpInterceptor {
     const token = this.tokenService.getToken();
     let clonedRequest = req;
 
-    // ✅ Agregar token al header si existe
     if (token) {
       clonedRequest = req.clone({
         setHeaders: {
@@ -31,13 +30,35 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
-    // ⛔ Manejo de errores de autenticación
     return next.handle(clonedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 || error.status === 403) {
+
+        if (error.status === 401) {
+          // ✅ Solo desloguear si el token expiró/es inválido (Spring Security lo rechaza)
+          // NO desloguear si es un 401 de permisos insuficientes (usuario sin rol admin)
+          const token = this.tokenService.getToken();
+          const url = error.url ?? '';
+
+          const isAuthFailure =
+            !token ||                              // sin token → expiró
+            url.includes('/usuario/Login') ||      // fallo en el login mismo
+            error.error?.message === 'JWT expired' // token expirado explícito
+          ;
+
+          if (isAuthFailure) {
+            this.tokenService.removeToken();
+            this.router.navigate(['/login']);
+          }
+          // Si tiene token válido pero no tiene permisos → se queda en la página,
+          // el componente manejará el error (ej: no mostrar el dropdown de clientes)
+        }
+
+        if (error.status === 403) {
+          // 403 = Spring Security rechazó el token completamente → sí desloguear
           this.tokenService.removeToken();
           this.router.navigate(['/login']);
         }
+
         return throwError(() => error);
       })
     );
