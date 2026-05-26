@@ -40,6 +40,10 @@ public class CategoriaServiceImpl implements CategoriaService {
             if(jwtFilter.isAdmin()){
 
                 if(validateCategoryMap(requestMap, false)){
+                    String nombre = requestMap.get("nombre");
+                    if (categoriaDao.findByNombreIgnoreCase(nombre).isPresent()) {
+                        return CstoreUtils.getResponseEntity("La categoría '" + nombre + "' ya existe", HttpStatus.BAD_REQUEST);
+                    }
                     categoriaDao.save(getCategoryFromMap(requestMap, false));
                     return CstoreUtils.getResponseEntity("Categoria added Successfully", HttpStatus.OK);
                 }
@@ -117,8 +121,14 @@ public class CategoriaServiceImpl implements CategoriaService {
 
                     if(!optional.isEmpty()){
 
-                        System.out.println("Objeto antes de guardar: " + getCategoryFromMap(requestMap, true));
-                        log.info("Actualizando categoría ID={} con nombre={}", requestMap.get("IdCategoria"), requestMap.get("nombre"));
+                        // Verificar que el nuevo nombre no exista en OTRA categoría
+                        String nuevoNombre = requestMap.get("nombre");
+                        Optional<Categoria> existente = categoriaDao.findByNombreIgnoreCase(nuevoNombre);
+                        if (existente.isPresent() && !existente.get().getId().equals(Integer.parseInt(requestMap.get("IdCategoria")))) {
+                            return CstoreUtils.getResponseEntity("La categoría '" + nuevoNombre + "' ya existe", HttpStatus.BAD_REQUEST);
+                        }
+
+                        log.info("Actualizando categoría ID={} con nombre={}", requestMap.get("IdCategoria"), nuevoNombre);
                         categoriaDao.save(getCategoryFromMap(requestMap, false));
                         return CstoreUtils.getResponseEntity("Categoria Updated Successfully",HttpStatus.OK);
 
