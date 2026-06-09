@@ -90,7 +90,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     private Usuario getUsuarioFromMap(Map<String, String> requestMap) {
         // Buscar el rol "usuario" desde la BD
-        Rol rolUsuario = rolDao.findByNombre("usuario")
+        Rol rolUsuario = rolDao.findByNombre("user")
                 .orElseThrow(() -> new RuntimeException("Rol 'usuario' no encontrado en BD"));
 
         Usuario usuario = new Usuario();
