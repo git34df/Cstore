@@ -19,7 +19,7 @@ export class AdminGuard implements CanActivate {
   canActivate(): boolean | UrlTree {
     const userRole = this.authService.getUserRole();
 
-    if (this.authService.isLoggedIn() && userRole === 'admin') {
+    if (this.authService.isLoggedIn() && userRole.toLocaleLowerCase() === 'admin') {
       return true;
     } else {
       // Redirige si no es admin o no tiene sesión
