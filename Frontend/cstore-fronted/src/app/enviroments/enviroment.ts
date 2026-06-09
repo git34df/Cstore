@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://cstore-production.up.railway.app'
+  apiUrl: 'https://cstore-backend-lifm.onrender.com'
 };
