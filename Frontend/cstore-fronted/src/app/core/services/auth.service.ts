@@ -76,7 +76,7 @@ export class AuthService {
 
   // ── VERIFICAR SI ES ADMIN ────────────────────────────────────
   isAdmin(): boolean {
-    return this.getUserRole() === 'admin';
+    return this.getUserRole().toLocaleLowerCase() === 'admin';
   }
 
   // ── CERRAR SESIÓN ────────────────────────────────────────────

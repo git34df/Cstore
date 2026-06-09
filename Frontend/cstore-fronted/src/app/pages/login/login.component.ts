@@ -36,7 +36,7 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
         // Lee el claim "rol" directo del JWT recién guardado
-        const rol = this.authService.getUserRole();
+        const rol = this.authService.getUserRole().toLocaleLowerCase();
         if (rol === 'admin') {
           this.router.navigate(['/admin']);
         } else {
